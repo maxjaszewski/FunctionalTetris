@@ -14,7 +14,7 @@
 
 import "./style.css";
 
-import { GameConstants, Viewport, Block } from "./constants";
+import { GameConstants, Viewport, BlockConstants } from "./constants";
 import { State, Key, Event, Action } from "./types";
 import { ShiftBlockLeft, ShiftBlockRight, DropBlock, Tick, reduceState } from "./state"
 import { updateView } from "./view";
@@ -24,7 +24,11 @@ import { map, filter, scan } from "rxjs/operators";
 
 // Define initial state of game
 const initialState: State = {
-  gameEnd: false,
+  stationaryBlocks: [],
+  level: 1,
+  score: 0,
+  highscore: 0,
+  gameEnd: false
 } as const;
 
 /**
