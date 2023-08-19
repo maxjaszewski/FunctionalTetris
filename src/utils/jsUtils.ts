@@ -41,7 +41,7 @@ const
     except =
         <T>(eq: (_: T) => (_: T) => boolean) =>
             (a: ReadonlyArray<T>) =>
-                (b: ReadonlyArray<T>) => a.filter(not(elem(eq)(b))),
+                (b: ReadonlyArray<T>) => a.filter(not(elem(eq)(b)))
 
 /**
  * Type guard for use in filters
