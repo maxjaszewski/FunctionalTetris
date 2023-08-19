@@ -22,6 +22,7 @@ import { updateView } from "./view";
 import { fromEvent, interval, merge, Subscription, Observable } from "rxjs";
 import { map, filter, scan } from "rxjs/operators";
 
+// Define initial state of game
 const initialState: State = {
   gameEnd: false,
 } as const;
@@ -38,7 +39,7 @@ export function main() {
   const fromKey = (keyCode: Key) =>
     key$.pipe(filter(({ code }) => code === keyCode));
 
-  // Keypress stream per key
+  // Keypress stream per key, output actions
   const left$ = fromKey("KeyA").pipe(map(_ => new ShiftLeft()));
   const right$ = fromKey("KeyD").pipe(map(_ => new ShiftRight()));
   const down$ = fromKey("KeyS").pipe(map(_ => new Down()));
