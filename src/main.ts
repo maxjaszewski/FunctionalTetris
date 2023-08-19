@@ -16,7 +16,7 @@ import "./style.css";
 
 import { GameConstants, Viewport, Block } from "./constants";
 import { State, Key, Event, Action } from "./types";
-import { ShiftLeft, ShiftRight, Down, Tick, reduceState } from "./state"
+import { ShiftBlockLeft, ShiftBlockRight, DropBlock, Tick, reduceState } from "./state"
 import { updateView } from "./view";
 
 import { fromEvent, interval, merge, Subscription, Observable } from "rxjs";
@@ -40,13 +40,13 @@ export function main() {
     key$.pipe(filter(({ code }) => code === keyCode));
 
   // Keypress stream per key, output actions
-  const left$ = fromKey("KeyA").pipe(map(_ => new ShiftLeft()));
-  const right$ = fromKey("KeyD").pipe(map(_ => new ShiftRight()));
-  const down$ = fromKey("KeyS").pipe(map(_ => new Down()));
+  const shiftBlockLeft$ = fromKey("KeyA").pipe(map(_ => new ShiftBlockLeft()));
+  const shiftBlockRight$ = fromKey("KeyD").pipe(map(_ => new ShiftBlockRight()));
+  const dropBlock$ = fromKey("KeyS").pipe(map(_ => new DropBlock()));
   const tick$ = interval(GameConstants.TICK_RATE_MS).pipe(map(elapsed => new Tick(elapsed)));
 
   // Merge observables to action stream
-  const action$: Observable<Action> = merge(tick$, left$, right$, down$);
+  const action$: Observable<Action> = merge(tick$, shiftBlockLeft$, shiftBlockRight$, dropBlock$);
   // Accumulate actions in state
   const state$: Observable<State> = action$.pipe(scan(reduceState, initialState));
   // Render state using subscription

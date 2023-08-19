@@ -1,7 +1,7 @@
 // Functions and objects that mutate State (CHANGE MODEL)
 import { State, Action } from "./types"
 
-export { ShiftLeft, ShiftRight, Down, reduceState, Tick }
+export { ShiftBlockLeft, ShiftBlockRight, DropBlock, reduceState, Tick }
 
 const
     /**
@@ -14,10 +14,10 @@ const
 
 
 // Action types that trigger game state transitions
-class ShiftLeft implements Action {
+class ShiftBlockLeft implements Action {
     constructor() { }
     /**
-     * add to the ships torque in the required direction
+     * Shifts block to the left
      * @param s previous state
      * @returns rotated state
      */
@@ -26,10 +26,10 @@ class ShiftLeft implements Action {
     })
 }
 
-class ShiftRight implements Action {
+class ShiftBlockRight implements Action {
     constructor() { }
     /**
-     * add to the ships torque in the required direction
+     * Shifts block to the right
      * @param s previous state
      * @returns rotated state
      */
@@ -38,10 +38,10 @@ class ShiftRight implements Action {
     })
 }
 
-class Down implements Action {
+class DropBlock implements Action {
     constructor() { }
     /**
-     * add to the ships torque in the required direction
+     * Drops block
      * @param s previous state
      * @returns rotated state
      */
@@ -53,7 +53,7 @@ class Down implements Action {
 class Tick implements Action {
     constructor(public readonly elapsed: number) { }
     /** 
-     * interval tick: bodies move, collisions happen, bullets expire
+     * interval tick: bodies move, collisions happen
      * @param s old State
      * @returns new State
      */
