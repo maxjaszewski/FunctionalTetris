@@ -2,47 +2,33 @@
 
 export { updateView }
 
-import { State } from "./types"
-import { Viewport, Block } from "./constants";
+import { State, Block } from "./types"
+import { Viewport, BlockConstants } from "./constants";
+import { show, hide } from "./util";
 
-/** Reusable rendering (side effects) function*/
-
-/**
- * Displays a SVG element on the canvas. Brings to foreground.
- * @param elem SVG element to display
- */
-const show = (elem: SVGGraphicsElement) => {
-    elem.setAttribute("visibility", "visible");
-    elem.parentNode!.appendChild(elem);
-};
 
 /**
- * Hides a SVG element on the canvas.
- * @param elem SVG element to hide
+ * Updates the view of a Block
+ * 
+ * @param block Update view for this block
  */
-const hide = (elem: SVGGraphicsElement) =>
-    elem.setAttribute("visibility", "hidden");
 
-/**
- * Creates an SVG element with the given properties.
- *
- * See https://developer.mozilla.org/en-US/docs/Web/SVG/Element for valid
- * element names and properties.
- *
- * @param namespace Namespace of the SVG element
- * @param name SVGElement name
- * @param props Properties to set on the SVG element
- * @returns SVG element
- */
-const createSvgElement = (
-    namespace: string | null,
-    name: string,
-    props: Record<string, string> = {}
-) => {
-    const elem = document.createElementNS(namespace, name) as SVGElement;
-    Object.entries(props).forEach(([k, v]) => elem.setAttribute(k, v));
-    return elem;
-};
+const updateBlockView = (rootSVG: HTMLElement) => (block: Block): void => {
+    function createBlockView() {
+        const v = createSvgElement(rootSVG.namespaceURI, "rect", {
+            id: `${block.id}`,
+            height: `${BlockConstants.HEIGHT}`,
+            width: `${BlockConstants.WIDTH}`,
+            x: `${block.x}`,
+            y: `${block.y}`,
+            style: `${block.style}`,
+        });
+        return v;
+    }
+    const b = document.getElementById(block.id) || createBlockView();
+    Object.entries(block).forEach(([k, v]) => b.setAttribute(k, v));
+
+}
 
 /**
  * Renders the current state to the canvas.
@@ -74,12 +60,6 @@ function updateView(onFinish: () => void) {
         const scoreText = document.querySelector("#scoreText") as HTMLElement;
         const highScoreText = document.querySelector("#highScoreText") as HTMLElement;
 
-        // document.getElementById can return null
-        // so use optional chaining to safely access method on element
-        const show = (id: string, condition: boolean) => ((e: HTMLElement | null) =>
-            condition ? e?.classList.remove('hidden')
-                : e?.classList.add('hidden'))(document.getElementById(id))
-
         /**
          * Renders the current state to the canvas.
          *
@@ -89,36 +69,36 @@ function updateView(onFinish: () => void) {
          */
         // Add blocks to the main grid canvas
         const cube = createSvgElement(svg.namespaceURI, "rect", {
-            height: `${Block.HEIGHT}`,
-            width: `${Block.WIDTH}`,
+            height: `${BlockConstants.HEIGHT}`,
+            width: `${BlockConstants.WIDTH}`,
             x: "0",
             y: "0",
             style: "fill: green",
         });
         svg.appendChild(cube);
         const cube2 = createSvgElement(svg.namespaceURI, "rect", {
-            height: `${Block.HEIGHT}`,
-            width: `${Block.WIDTH}`,
-            x: `${Block.WIDTH * (3 - 1)}`,
-            y: `${Block.HEIGHT * (20 - 1)}`,
+            height: `${BlockConstants.HEIGHT}`,
+            width: `${BlockConstants.WIDTH}`,
+            x: `${BlockConstants.WIDTH * (3 - 1)}`,
+            y: `${BlockConstants.HEIGHT * (20 - 1)}`,
             style: "fill: red",
         });
         svg.appendChild(cube2);
         const cube3 = createSvgElement(svg.namespaceURI, "rect", {
-            height: `${Block.HEIGHT}`,
-            width: `${Block.WIDTH}`,
-            x: `${Block.WIDTH * (4 - 1)}`,
-            y: `${Block.HEIGHT * (20 - 1)}`,
+            height: `${BlockConstants.HEIGHT}`,
+            width: `${BlockConstants.WIDTH}`,
+            x: `${BlockConstants.WIDTH * (4 - 1)}`,
+            y: `${BlockConstants.HEIGHT * (20 - 1)}`,
             style: "fill: red",
         });
         svg.appendChild(cube3);
 
         // Add a block to the preview canvas
         const cubePreview = createSvgElement(preview.namespaceURI, "rect", {
-            height: `${Block.HEIGHT}`,
-            width: `${Block.WIDTH}`,
-            x: `${Block.WIDTH * 2}`,
-            y: `${Block.HEIGHT}`,
+            height: `${BlockConstants.HEIGHT}`,
+            width: `${BlockConstants.WIDTH}`,
+            x: `${BlockConstants.WIDTH * 2}`,
+            y: `${BlockConstants.HEIGHT}`,
             style: "fill: green",
         });
         preview.appendChild(cubePreview);

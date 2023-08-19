@@ -1,5 +1,5 @@
 // Utility functions and definitions that are NOT specific to the tetris game
-
+export { RNG, Vec, flatMap, not, elem, except, attr, isNotNullOrUndefined, show, hide, createSvgElement }
 /**
  * A random number generator which provides two pure functions
  * `hash` and `scaleToRange`.  Call `hash` repeatedly to generate the
@@ -97,3 +97,43 @@ const
 function isNotNullOrUndefined<T extends object>(input: null | undefined | T): input is T {
     return input != null;
 }
+
+
+/** Reusable rendering (side effects) function*/
+
+/**
+ * Displays a SVG element on the canvas. Brings to foreground.
+ * @param elem SVG element to display
+ */
+const show = (elem: SVGGraphicsElement) => {
+    elem.setAttribute("visibility", "visible");
+    elem.parentNode!.appendChild(elem);
+};
+
+/**
+ * Hides a SVG element on the canvas.
+ * @param elem SVG element to hide
+ */
+const hide = (elem: SVGGraphicsElement) =>
+    elem.setAttribute("visibility", "hidden");
+
+/**
+* Creates an SVG element with the given properties.
+*
+* See https://developer.mozilla.org/en-US/docs/Web/SVG/Element for valid
+* element names and properties.
+*
+* @param namespace Namespace of the SVG element
+* @param name SVGElement name
+* @param props Properties to set on the SVG element
+* @returns SVG element
+*/
+const createSvgElement = (
+    namespace: string | null,
+    name: string,
+    props: Record<string, string> = {}
+) => {
+    const elem = document.createElementNS(namespace, name) as SVGElement;
+    Object.entries(props).forEach(([k, v]) => elem.setAttribute(k, v));
+    return elem;
+};
