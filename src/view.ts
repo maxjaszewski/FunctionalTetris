@@ -14,21 +14,18 @@ import { show, hide, createSvgElement } from "./util";
  */
 
 const updateBlockView = (rootSVG: HTMLElement) => (block: Block): void => {
-    function createBlockView() {
-        const v = createSvgElement(rootSVG.namespaceURI, "rect", {
-            id: `${block.id}`,
-            height: `${BlockConstants.HEIGHT}`,
-            width: `${BlockConstants.WIDTH}`,
-            x: `${BlockConstants.WIDTH * block.x}`,
-            y: `${BlockConstants.HEIGHT * block.y}`,
-            style: `${block.style}`,
-        });
+    function appendNewRect() {
+        const v = createSvgElement(rootSVG.namespaceURI, "rect");
         rootSVG.appendChild(v)
         return v;
     }
-    const b = document.getElementById(block.id) || createBlockView();
-    //Object.entries(block).forEach(([k, v]) => b.setAttribute(k, v));
-
+    const b = document.getElementById(block.id) || appendNewRect();
+    b.setAttribute("id", `${block.id}`);
+    b.setAttribute("height", `${BlockConstants.HEIGHT}`);
+    b.setAttribute("width", `${BlockConstants.WIDTH}`);
+    b.setAttribute("x", `${BlockConstants.WIDTH * block.x}`);
+    b.setAttribute("y", `${BlockConstants.HEIGHT * block.y}`);
+    b.setAttribute("style", `${block.style}`);
 }
 
 /**
@@ -75,7 +72,7 @@ function updateView(onFinish: () => void) {
          */
         // Add blocks to the main grid canvas
         s.stationaryBlocks.forEach(updateBlockView(svg));
-        
+
         // Add a block to the preview canvas
         const cubePreview = createSvgElement(preview.namespaceURI, "rect", {
             height: `${BlockConstants.HEIGHT}`,
