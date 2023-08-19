@@ -1,4 +1,4 @@
-export { Constants, Viewport, Block }
+export { GameConstants, Viewport, Block }
 
 // This file defines constants
 
@@ -10,13 +10,13 @@ const
         PREVIEW_HEIGHT: 80,
     } as const,
 
-    Constants = {
+    GameConstants = {
         TICK_RATE_MS: 500,
         GRID_WIDTH: 10,
         GRID_HEIGHT: 20,
     } as const,
 
     Block = {
-        WIDTH: Viewport.CANVAS_WIDTH / Constants.GRID_WIDTH,
-        HEIGHT: Viewport.CANVAS_HEIGHT / Constants.GRID_HEIGHT,
+        WIDTH: Viewport.CANVAS_WIDTH / GameConstants.GRID_WIDTH,
+        HEIGHT: Viewport.CANVAS_HEIGHT / GameConstants.GRID_HEIGHT,
     };

@@ -14,7 +14,7 @@
 
 import "./style.css";
 
-import { Constants, Viewport, Block } from "./constants";
+import { GameConstants, Viewport, Block } from "./constants";
 import { State, Key, Event } from "./types";
 import { fromEvent, interval, merge } from "rxjs";
 import { map, filter, scan } from "rxjs/operators";
@@ -109,7 +109,7 @@ export function main() {
   /** Observables */
 
   /** Determines the rate of time steps */
-  const tick$ = interval(Constants.TICK_RATE_MS);
+  const tick$ = interval(GameConstants.TICK_RATE_MS);
 
   /**
    * Renders the current state to the canvas.
