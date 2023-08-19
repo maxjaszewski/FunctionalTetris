@@ -4,7 +4,7 @@ export { updateView }
 
 import { State, Block } from "./types"
 import { Viewport, BlockConstants } from "./constants";
-import { show, hide, createSvgElement } from "./util";
+import { show, hide, createSvgElement } from "./utils/htmlUtils";
 
 
 /**

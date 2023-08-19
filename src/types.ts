@@ -1,7 +1,7 @@
 // This file defines Typescript types and interfaces
 
 
-export type { Key, Event, ViewType, State, Action, Block }
+export type { Key, Event, ViewType, State, Action, Block, TetrisPiece }
 
 
 /**
@@ -34,16 +34,16 @@ type Block = Readonly<{
 /**
  * Tetris pieces
  */
-interface TetrisPiece {
+type TetrisPiece  = Readonly<{
     blocks: ReadonlyArray<Block>
-    rotate(): void;
-}
+}>
 
 /**
  * Game state
  */
 type State = Readonly<{
-    tetrisPiece?: TetrisPiece, // Tetris piece may not exist at start or end of game
+    upComingTetrisPiece?: TetrisPiece, // Tetris piece may not exist at start or end of game
+    currentTetrisPiece?: TetrisPiece, // Tetris piece may not exist at start or end of game
     stationaryBlocks: ReadonlyArray<Block>,
     level: number,
     score: number,

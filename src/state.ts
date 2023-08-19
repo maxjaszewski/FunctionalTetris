@@ -58,6 +58,7 @@ class Tick implements Action {
      * @returns new State
      */
     apply(s: State): State {
+        
         return {
             ...s
         }
