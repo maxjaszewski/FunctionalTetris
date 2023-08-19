@@ -21,6 +21,8 @@ type ViewType = undefined; // TODO
  * Game state
  */
 type State = Readonly<{
+    time: number,
+    gameOver: boolean
 }>
 
 /**
