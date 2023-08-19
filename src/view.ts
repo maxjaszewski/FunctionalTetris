@@ -59,7 +59,10 @@ function updateView(onFinish: () => void) {
         const levelText = document.querySelector("#levelText") as HTMLElement;
         const scoreText = document.querySelector("#scoreText") as HTMLElement;
         const highScoreText = document.querySelector("#highScoreText") as HTMLElement;
-
+        
+        levelText.textContent = s.level.toString();
+        scoreText.textContent = s.score.toString();
+        highScoreText.textContent = s.score.toString();
         /**
          * Renders the current state to the canvas.
          *
