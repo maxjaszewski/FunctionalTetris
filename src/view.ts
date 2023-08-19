@@ -26,12 +26,8 @@ function updateView(onFinish: () => void) {
             condition ? e?.classList.remove('hidden')
                 : e?.classList.add('hidden'))(document.getElementById(id))
 
-        if (s.gameOver) {
-            const v = document.createElementNS(svg.namespaceURI, "text");
-            attr(v, { x: Constants.CanvasSize / 6, y: Constants.CanvasSize / 2, class: "gameover" });
-            v.textContent = "Game Over";
-            svg.appendChild(v);
-            onFinish();
+        if (s.gameEnd) {
+            
         }
     }
 }
