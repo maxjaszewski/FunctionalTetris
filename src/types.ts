@@ -1,13 +1,6 @@
-export { Constants }
 export type { Key, Event, ViewType, State, Action }
 
-// This file defines the 
-
-// Constants for the Game
-const
-    Constants = {
-
-    } as const;
+// This file defines Typescript types and interfaces for the Game
 
 /**
  * a string literal type for each key used in game control
