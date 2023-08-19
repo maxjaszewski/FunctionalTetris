@@ -19,14 +19,15 @@ const updateBlockView = (rootSVG: HTMLElement) => (block: Block): void => {
             id: `${block.id}`,
             height: `${BlockConstants.HEIGHT}`,
             width: `${BlockConstants.WIDTH}`,
-            x: `${block.x}`,
-            y: `${block.y}`,
+            x: `${BlockConstants.WIDTH * block.x}`,
+            y: `${BlockConstants.HEIGHT * block.y}`,
             style: `${block.style}`,
         });
+        rootSVG.appendChild(v)
         return v;
     }
     const b = document.getElementById(block.id) || createBlockView();
-    Object.entries(block).forEach(([k, v]) => b.setAttribute(k, v));
+    //Object.entries(block).forEach(([k, v]) => b.setAttribute(k, v));
 
 }
 
@@ -63,6 +64,8 @@ function updateView(onFinish: () => void) {
         levelText.textContent = s.level.toString();
         scoreText.textContent = s.score.toString();
         highScoreText.textContent = s.score.toString();
+
+        
         /**
          * Renders the current state to the canvas.
          *
@@ -71,31 +74,8 @@ function updateView(onFinish: () => void) {
          * @param s Current state
          */
         // Add blocks to the main grid canvas
-        const cube = createSvgElement(svg.namespaceURI, "rect", {
-            height: `${BlockConstants.HEIGHT}`,
-            width: `${BlockConstants.WIDTH}`,
-            x: "0",
-            y: "0",
-            style: "fill: green",
-        });
-        svg.appendChild(cube);
-        const cube2 = createSvgElement(svg.namespaceURI, "rect", {
-            height: `${BlockConstants.HEIGHT}`,
-            width: `${BlockConstants.WIDTH}`,
-            x: `${BlockConstants.WIDTH * (3 - 1)}`,
-            y: `${BlockConstants.HEIGHT * (20 - 1)}`,
-            style: "fill: red",
-        });
-        svg.appendChild(cube2);
-        const cube3 = createSvgElement(svg.namespaceURI, "rect", {
-            height: `${BlockConstants.HEIGHT}`,
-            width: `${BlockConstants.WIDTH}`,
-            x: `${BlockConstants.WIDTH * (4 - 1)}`,
-            y: `${BlockConstants.HEIGHT * (20 - 1)}`,
-            style: "fill: red",
-        });
-        svg.appendChild(cube3);
-
+        s.stationaryBlocks.forEach(updateBlockView(svg));
+        
         // Add a block to the preview canvas
         const cubePreview = createSvgElement(preview.namespaceURI, "rect", {
             height: `${BlockConstants.HEIGHT}`,

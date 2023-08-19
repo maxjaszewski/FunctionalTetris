@@ -15,16 +15,37 @@
 import "./style.css";
 
 import { GameConstants, Viewport, BlockConstants } from "./constants";
-import { State, Key, Event, Action } from "./types";
+import { State, Key, Event, Action, Block } from "./types";
 import { ShiftBlockLeft, ShiftBlockRight, DropBlock, Tick, reduceState } from "./state"
 import { updateView } from "./view";
 
 import { fromEvent, interval, merge, Subscription, Observable } from "rxjs";
 import { map, filter, scan } from "rxjs/operators";
 
+const initBlock1 = {
+  id: "1",
+  x: 0,
+  y: 0,
+  style: "fill: green"
+} as Block;
+
+const initBlock2 = {
+  id: "2",
+  x: 2,
+  y: 19,
+  style: "fill: red"
+} as Block;
+
+const initBlock3 = {
+  id: "3",
+  x: 3,
+  y: 19,
+  style: "fill: red"
+} as Block;
+
 // Define initial state of game
 const initialState: State = {
-  stationaryBlocks: [],
+  stationaryBlocks: [initBlock1, initBlock2, initBlock3],
   level: 1,
   score: 0,
   highscore: 0,
