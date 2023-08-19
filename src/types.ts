@@ -5,12 +5,12 @@ export type { Key, Event, ViewType, State, Action }
 /**
  * a string literal type for each key used in game control
  */
-type Key = 'ArrowLeft' | 'ArrowRight' | 'ArrowDown';
+type Key = "KeyS" | "KeyA" | "KeyD";
 
 /**
  * only input events are keydown and up
  */
-type Event = 'keydown' | 'keyup'
+type Event = 'keydown' | 'keyup' | "keypress";
 
 /**
  * our game has the following view element types
@@ -21,8 +21,7 @@ type ViewType = undefined; // TODO
  * Game state
  */
 type State = Readonly<{
-    time: number,
-    gameOver: boolean
+    gameEnd: boolean
 }>
 
 /**

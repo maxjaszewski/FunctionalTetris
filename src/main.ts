@@ -15,22 +15,10 @@
 import "./style.css";
 
 import { Constants, Viewport, Block } from "./constants";
+import { State } from "./types";
 import { fromEvent, interval, merge } from "rxjs";
 import { map, filter, scan } from "rxjs/operators";
 
-/** User input */
-
-type Key = "KeyS" | "KeyA" | "KeyD";
-
-type Event = "keydown" | "keyup" | "keypress";
-
-/** Utility functions */
-
-/** State processing */
-
-type State = Readonly<{
-  gameEnd: boolean;
-}>;
 
 const initialState: State = {
   gameEnd: false,
