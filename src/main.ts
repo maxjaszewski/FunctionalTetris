@@ -14,6 +14,7 @@
 
 import "./style.css";
 
+import { Constants, Viewport, Block } from "./constants";
 import { fromEvent, interval, merge } from "rxjs";
 import { map, filter, scan } from "rxjs/operators";
 
