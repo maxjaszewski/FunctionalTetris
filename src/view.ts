@@ -2,6 +2,7 @@
 
 export { updateView }
 
+import { Constants } from "./constants"
 import { State } from "./types"
 /**
  * Update the SVG game view.  
