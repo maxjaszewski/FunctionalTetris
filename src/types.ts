@@ -1,6 +1,6 @@
 export type { Key, Event, ViewType, State, Action }
 
-// This file defines Typescript types and interfaces for the Game
+// This file defines Typescript types and interfaces
 
 /**
  * a string literal type for each key used in game control

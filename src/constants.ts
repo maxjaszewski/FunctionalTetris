@@ -1,6 +1,7 @@
 export { Constants }
 
-// Constants for the Game
+// This file defines constants
+
 const
     Constants = {
 
