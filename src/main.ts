@@ -15,22 +15,18 @@
 import "./style.css";
 
 import { GameConstants, Viewport, Block } from "./constants";
-import { State, Key, Event } from "./types";
-import { fromEvent, interval, merge } from "rxjs";
+import { State, Key, Event, Action } from "./types";
+import { ShiftLeft, ShiftRight, Down, Tick, reduceState } from "./state"
+import { updateView } from "./view";
+
+import { fromEvent, interval, merge, Subscription, Observable } from "rxjs";
 import { map, filter, scan } from "rxjs/operators";
+
 
 
 const initialState: State = {
   gameEnd: false,
 } as const;
-
-/**
- * Updates the state by proceeding with one time step.
- *
- * @param s Current state
- * @returns Updated state
- */
-const tick = (s: State) => s;
 
 /** Rendering (side effects) */
 
@@ -102,14 +98,18 @@ export function main() {
   const fromKey = (keyCode: Key) =>
     key$.pipe(filter(({ code }) => code === keyCode));
 
-  const left$ = fromKey("KeyA");
-  const right$ = fromKey("KeyD");
-  const down$ = fromKey("KeyS");
+  const left$ = fromKey("KeyA").pipe(map(_ => new ShiftLeft()));
+  const right$ = fromKey("KeyD").pipe(map(_ => new ShiftRight()));
+  const down$ = fromKey("KeyS").pipe(map(_ => new Down()));
 
   /** Observables */
 
   /** Determines the rate of time steps */
-  const tick$ = interval(GameConstants.TICK_RATE_MS);
+  const tick$ = interval(GameConstants.TICK_RATE_MS).pipe(map(elapsed => new Tick(elapsed)));
+
+  const action$: Observable<Action> = merge(tick$, left$, right$, down$);
+  const state$: Observable<State> = action$.pipe(scan(reduceState, initialState));
+  const subscription: Subscription = state$.subscribe(updateView(()=>subscription.unsubscribe()));
 
   /**
    * Renders the current state to the canvas.
