@@ -1,6 +1,13 @@
-export type { Key, Event, ViewType, State, Action }
-
 // This file defines Typescript types and interfaces
+
+
+export type { Key, Event, ViewType, State, Action, Block }
+
+
+/**
+ * Block fill styles
+ */
+type BlockStyle = "fill: red" | "fill: green"
 
 /**
  * a string literal type for each key used in game control
@@ -17,10 +24,30 @@ type Event = 'keydown' | 'keyup' | "keypress";
  */
 type ViewType = undefined; // TODO
 
+type Block = Readonly<{
+    id: string,
+    x: number,
+    y: number,
+    style: BlockStyle
+}>
+
+/**
+ * Tetris pieces
+ */
+interface TetrisPiece {
+    blocks: ReadonlyArray<Block>
+    rotate(): void;
+}
+
 /**
  * Game state
  */
 type State = Readonly<{
+    tetrisPiece?: TetrisPiece, // Tetris piece may not exist at start or end of game
+    stationaryBlocks: ReadonlyArray<Block>,
+    level: number,
+    score: number,
+    highscore: number,
     gameEnd: boolean
 }>
 
