@@ -16,7 +16,7 @@ import "./style.css";
 
 import { GameConstants, Viewport, BlockConstants } from "./constants";
 import { State, Key, Event, Action, Block } from "./types";
-import { ShiftBlockLeft, ShiftBlockRight, DropBlock, Tick, reduceState } from "./state"
+import { ShiftBlockLeft, ShiftBlockRight, RotateBlock, Tick, reduceState } from "./state"
 import { updateView } from "./view";
 
 import { fromEvent, interval, merge, Subscription, Observable } from "rxjs";
@@ -67,7 +67,7 @@ export function main() {
   // Keypress stream per key, output actions
   const shiftBlockLeft$ = fromKey("KeyA").pipe(map(_ => new ShiftBlockLeft()));
   const shiftBlockRight$ = fromKey("KeyD").pipe(map(_ => new ShiftBlockRight()));
-  const dropBlock$ = fromKey("KeyS").pipe(map(_ => new DropBlock()));
+  const dropBlock$ = fromKey("KeyS").pipe(map(_ => new RotateBlock()));
   const tick$ = interval(GameConstants.TICK_RATE_MS).pipe(map(elapsed => new Tick(elapsed)));
 
   // Merge observables to action stream

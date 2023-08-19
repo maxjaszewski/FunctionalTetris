@@ -1,7 +1,7 @@
 // Functions and objects that mutate State (CHANGE MODEL)
 import { State, Action } from "./types"
 
-export { ShiftBlockLeft, ShiftBlockRight, DropBlock, reduceState, Tick }
+export { ShiftBlockLeft, ShiftBlockRight, RotateBlock, reduceState, Tick }
 
 const
     /**
@@ -38,10 +38,10 @@ class ShiftBlockRight implements Action {
     })
 }
 
-class DropBlock implements Action {
+class RotateBlock implements Action {
     constructor() { }
     /**
-     * Drops block
+     * Rotates a block
      * @param s previous state
      * @returns rotated state
      */
