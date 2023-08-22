@@ -15,35 +15,53 @@
 import "./style.css";
 
 import { GameConstants, Viewport, BlockConstants } from "./constants";
-import { State, Key, Event, Action, Block } from "./types";
+import { State, Key, Event, Action, Block, TetrisPiece } from "./types";
 import { ShiftBlockLeft, ShiftBlockRight, RotateBlock, Tick, reduceState } from "./state"
 import { updateView } from "./view";
 
 import { fromEvent, interval, merge, Subscription, Observable } from "rxjs";
 import { map, filter, scan } from "rxjs/operators";
 
-const initBlock1 = {
-  id: "2",
-  x: 2,
-  y: 19,
-  style: "fill: red"
-} as Block;
-
-const initBlock2 = {
-  id: "3",
-  x: 3,
-  y: 19,
-  style: "fill: red"
-} as Block;
+const tetrisPiece = {
+  id: 1,
+  blocks: [
+    {
+      id: "4",
+      x: 0,
+      y: 0,
+      style: "fill: red"
+    },
+    {
+      id: "5",
+      x: 1,
+      y: 0,
+      style: "fill: red"
+    },
+    {
+      id: "6",
+      x: 0,
+      y: 1,
+      style: "fill: red"
+    },
+    {
+      id: "7",
+      x: 1,
+      y: 1,
+      style: "fill: red"
+    }
+  ]
+} as TetrisPiece;
 
 // Define initial state of game
 const initialState: State = {
-  stationaryBlocks: [initBlock1, initBlock2],
+  upComingTetrisPiece: tetrisPiece,
+  currentTetrisPiece: tetrisPiece,
+  stationaryBlocks: [],
   level: 1,
   score: 0,
   highscore: 0,
   gameEnd: false,
-  blockCount: 2 // TODO
+  blockCount: 0 // TODO
 } as const;
 
 /**
