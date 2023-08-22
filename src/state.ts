@@ -1,7 +1,7 @@
 // Functions and objects that mutate State (CHANGE MODEL)
 import { GameConstants } from "./constants";
 import { State, Action, Block } from "./types"
-import { shiftPieceDown } from "./utils/bodyUtils";
+import { shiftPieceDown, shiftPieceLeft, shiftPieceRight } from "./utils/bodyUtils";
 export { ShiftBlockLeft, ShiftBlockRight, RotateBlock, reduceState, Tick }
 
 const
@@ -22,8 +22,9 @@ class ShiftBlockLeft implements Action {
      * @param s previous state
      * @returns rotated state
      */
-    apply = (s: State) => ({
-        ...s
+    apply = (s: State): State => ({
+        ...s,
+        currentTetrisPiece: shiftPieceLeft(s.currentTetrisPiece)
     })
 }
 
@@ -34,8 +35,9 @@ class ShiftBlockRight implements Action {
      * @param s previous state
      * @returns rotated state
      */
-    apply = (s: State) => ({
-        ...s
+    apply = (s: State): State => ({
+        ...s,
+        currentTetrisPiece: shiftPieceRight(s.currentTetrisPiece)
     })
 }
 
@@ -71,7 +73,7 @@ class Tick implements Action {
     }
 
     static tetrisPieceBlocked(s: State): boolean {
-        
+
         const tetrisPieceAtBottom = (): boolean => {
             return s.currentTetrisPiece.blocks.filter(block => block.y == GameConstants.GRID_HEIGHT - 1).length > 0
         }
