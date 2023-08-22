@@ -11,7 +11,7 @@ const
     } as const,
 
     GameConstants = {
-        TICK_RATE_MS: 500,
+        TICK_RATE_MS: 200,
         GRID_WIDTH: 10,
         GRID_HEIGHT: 20,
     } as const,
