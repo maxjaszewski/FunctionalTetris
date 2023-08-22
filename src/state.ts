@@ -1,6 +1,6 @@
 // Functions and objects that mutate State (CHANGE MODEL)
 import { State, Action } from "./types"
-
+import { shiftPieceDown } from "./utils/bodyUtils";
 export { ShiftBlockLeft, ShiftBlockRight, RotateBlock, reduceState, Tick }
 
 const
@@ -58,9 +58,9 @@ class Tick implements Action {
      * @returns new State
      */
     apply(s: State): State {
-        
         return {
-            ...s
+            ...s,
+            currentTetrisPiece: shiftPieceDown(s.currentTetrisPiece)
         }
     }
 }
