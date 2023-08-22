@@ -72,7 +72,7 @@ function updateView(onFinish: () => void) {
          */
         // Add blocks to the main grid canvas
         s.stationaryBlocks.forEach(updateBlockView(svg));
-
+        s.currentTetrisPiece.blocks.forEach(updateBlockView(svg));
         // Add a block to the preview canvas
         const cubePreview = createSvgElement(preview.namespaceURI, "rect", {
             height: `${BlockConstants.HEIGHT}`,
