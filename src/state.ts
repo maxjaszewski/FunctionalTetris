@@ -1,5 +1,6 @@
 // Functions and objects that mutate State (CHANGE MODEL)
-import { State, Action } from "./types"
+import { GameConstants } from "./constants";
+import { State, Action, Block } from "./types"
 import { shiftPieceDown } from "./utils/bodyUtils";
 export { ShiftBlockLeft, ShiftBlockRight, RotateBlock, reduceState, Tick }
 
@@ -54,13 +55,32 @@ class Tick implements Action {
     constructor(public readonly elapsed: number) { }
     /** 
      * interval tick: bodies move, collisions happen
-     * @param s old State
+     * @params old State
      * @returns new State
      */
+
+
     apply(s: State): State {
+        if (Tick.tetrisPieceBlocked(s)){
+            return s;
+        }
         return {
             ...s,
             currentTetrisPiece: shiftPieceDown(s.currentTetrisPiece)
         }
+    }
+
+    static tetrisPieceBlocked(s: State): boolean {
+        
+        const tetrisPieceAtBottom = (): boolean => {
+            return s.currentTetrisPiece.blocks.filter(block => block.y == GameConstants.GRID_HEIGHT - 1).length > 0
+        }
+
+        const tetrisPieceBlocked = (): boolean => {
+            const allPieceAndStationaryBlocks = s.currentTetrisPiece.blocks.flatMap(b => s.stationaryBlocks.map<[Block, Block]>(r => ([b, r])))
+            const touchingBlocks = allPieceAndStationaryBlocks.filter(blockPair => blockPair[0].y - blockPair[1].y == 1)
+            return touchingBlocks.length > 0;
+        }
+        return tetrisPieceAtBottom() || tetrisPieceBlocked();
     }
 }
