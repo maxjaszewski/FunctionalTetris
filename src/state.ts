@@ -1,7 +1,7 @@
 // Functions and objects that mutate State (CHANGE MODEL)
 import { GameConstants } from "./constants";
 import { State, Action, Block } from "./types"
-import { shiftPieceDown, shiftPieceLeft, shiftPieceRight } from "./utils/bodyUtils";
+import { generateNewRandomPiece, shiftPieceDown, shiftPieceLeft, shiftPieceRight } from "./utils/bodyUtils";
 export { ShiftBlockLeft, ShiftBlockRight, RotateBlock, reduceState, Tick }
 
 const
@@ -63,13 +63,11 @@ class Tick implements Action {
 
 
     apply(s: State): State {
-        if (Tick.tetrisPieceBlocked(s)){
-            return s;
-        }
-        return {
+        const newState: State = Tick.tetrisPieceBlocked(s) ? Tick.moveTetrisPieceToStationaryAndGenerateNewPiece(s): {
             ...s,
             currentTetrisPiece: shiftPieceDown(s.currentTetrisPiece)
-        }
+        };
+        return newState
     }
 
     static tetrisPieceBlocked(s: State): boolean {
@@ -79,10 +77,20 @@ class Tick implements Action {
         }
 
         const tetrisPieceBlocked = (): boolean => {
-            const allPieceAndStationaryBlocks = s.currentTetrisPiece.blocks.flatMap(b => s.stationaryBlocks.map<[Block, Block]>(r => ([b, r])))
-            const touchingBlocks = allPieceAndStationaryBlocks.filter(blockPair => blockPair[0].y - blockPair[1].y == 1)
+            const allPieceAndStationaryBlocks = s.currentTetrisPiece.blocks.flatMap(b => s.stationaryBlocks.map<[Block, Block]>(r => ([b, r])));
+            console.log(allPieceAndStationaryBlocks);
+            const touchingBlocks = allPieceAndStationaryBlocks.filter(blockPair => blockPair[1].x == blockPair[0].x && blockPair[1].y - blockPair[0].y == 1);
             return touchingBlocks.length > 0;
         }
         return tetrisPieceAtBottom() || tetrisPieceBlocked();
+    }
+
+    static moveTetrisPieceToStationaryAndGenerateNewPiece(s: State): State {
+        return {
+            ...s,
+            stationaryBlocks: [...s.stationaryBlocks, ...s.currentTetrisPiece.blocks],
+            currentTetrisPiece: generateNewRandomPiece(s),
+            blockCount: s.blockCount+4
+        }
     }
 }
