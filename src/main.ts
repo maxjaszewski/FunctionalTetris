@@ -26,25 +26,25 @@ const tetrisPiece = {
   id: 1,
   blocks: [
     {
-      id: "4",
+      id: "1",
       x: 0,
       y: 0,
       style: "fill: red"
     },
     {
-      id: "5",
+      id: "2",
       x: 1,
       y: 0,
       style: "fill: red"
     },
     {
-      id: "6",
+      id: "3",
       x: 0,
       y: 1,
       style: "fill: red"
     },
     {
-      id: "7",
+      id: "4",
       x: 1,
       y: 1,
       style: "fill: red"
@@ -61,7 +61,7 @@ const initialState: State = {
   score: 0,
   highscore: 0,
   gameEnd: false,
-  blockCount: 0 // TODO
+  blockCount: 4 // TODO
 } as const;
 
 /**
