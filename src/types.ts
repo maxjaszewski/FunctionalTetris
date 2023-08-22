@@ -43,8 +43,8 @@ type TetrisPiece  = Readonly<{
  * Game state
  */
 type State = Readonly<{
-    upComingTetrisPiece: TetrisPiece, // Tetris piece may not exist at start or end of game
-    currentTetrisPiece: TetrisPiece, // Tetris piece may not exist at start or end of game
+    upComingTetrisPiece: Readonly<TetrisPiece>, // Tetris piece may not exist at start or end of game
+    currentTetrisPiece: Readonly<TetrisPiece>, // Tetris piece may not exist at start or end of game
     stationaryBlocks: ReadonlyArray<Block>,
     level: number,
     score: number,
