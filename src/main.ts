@@ -23,20 +23,13 @@ import { fromEvent, interval, merge, Subscription, Observable } from "rxjs";
 import { map, filter, scan } from "rxjs/operators";
 
 const initBlock1 = {
-  id: "1",
-  x: 0,
-  y: 0,
-  style: "fill: green"
-} as Block;
-
-const initBlock2 = {
   id: "2",
   x: 2,
   y: 19,
   style: "fill: red"
 } as Block;
 
-const initBlock3 = {
+const initBlock2 = {
   id: "3",
   x: 3,
   y: 19,
@@ -45,11 +38,12 @@ const initBlock3 = {
 
 // Define initial state of game
 const initialState: State = {
-  stationaryBlocks: [initBlock1, initBlock2, initBlock3],
+  stationaryBlocks: [initBlock1, initBlock2],
   level: 1,
   score: 0,
   highscore: 0,
-  gameEnd: false
+  gameEnd: false,
+  blockCount: 2 // TODO
 } as const;
 
 /**
