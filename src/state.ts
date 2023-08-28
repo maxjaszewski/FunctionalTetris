@@ -119,6 +119,6 @@ class Tick implements Action {
     }
 
     static isGameOver(s: State): boolean { 
-        return s.stationaryBlocks.filter(block => block.y == 0).length > 0;
+        return s.stationaryBlocks.reduce((acc, curr) => curr.y == 0 || acc, false); //TODO change all accumulating functions to use reduce instead of filter
     }
 }
