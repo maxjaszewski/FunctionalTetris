@@ -1,7 +1,7 @@
 // This file defines Typescript types and interfaces
 
 
-export type { Key, Event, ViewType, State, Action, Block, TetrisPiece }
+export type { Key, Event, ViewType, State, Action, Block, TetrisPiece, SortedBlocks }
 
 
 /**
@@ -60,3 +60,8 @@ type State = Readonly<{
 interface Action {
     apply(s: State): State;
 }
+
+type SortedBlocks = Readonly<{
+    [key: number]: ReadonlyArray<Block>
+
+}>

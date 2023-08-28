@@ -72,7 +72,7 @@ function updateView(onFinish: () => void) {
         
         levelText.textContent = s.level.toString();
         scoreText.textContent = s.score.toString();
-        highScoreText.textContent = s.score.toString();
+        highScoreText.textContent = s.highscore.toString();
 
         
         /**

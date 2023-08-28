@@ -1,6 +1,6 @@
 // Functions and objects that mutate State (CHANGE MODEL)
 import { GameConstants } from "./constants";
-import { State, Action, Block } from "./types"
+import { State, Action, Block, SortedBlocks } from "./types"
 import { generateNewRandomPiece, shiftPieceDown, shiftPieceLeft, shiftPieceRight } from "./utils/bodyUtils";
 export { ShiftBlockLeft, ShiftBlockRight, RotateBlock, reduceState, Tick }
 
@@ -84,14 +84,17 @@ class Tick implements Action {
     apply(s: State): State {
 
         // If Piece is halted, add blocks to stationary blocks and generate a new block
-        const newState: State = Tick.tetrisPieceBlocked(s) ? Tick.moveTetrisPieceToStationaryAndGenerateNewPiece(s): {
+        const newStateHalted: State = Tick.tetrisPieceBlocked(s) ? Tick.moveTetrisPieceToStationaryAndGenerateNewPiece(s): {
             ...s,
             currentTetrisPiece: shiftPieceDown(s.currentTetrisPiece)
         };
 
+        // If row is full, remove all blocks in the row and increment score
+        const newStateClearRows = Tick.checkFullRows(newStateHalted);
+
         // Game over if block height for any column in new state is greater than grid height
 
-        return Tick.isGameOver(newState) ? {...newState, gameEnd: true} : newState;
+        return Tick.isGameOver(newStateClearRows) ? {...newStateClearRows, gameEnd: true} : newStateClearRows;
     }
 
     static tetrisPieceBlocked(s: State): boolean {
@@ -102,7 +105,6 @@ class Tick implements Action {
 
         const tetrisPieceBlocked = (): boolean => {
             const allPieceAndStationaryBlocks = s.currentTetrisPiece.blocks.flatMap(b => s.stationaryBlocks.map<[Block, Block]>(r => ([b, r])));
-            console.log(allPieceAndStationaryBlocks);
             const touchingBlocks = allPieceAndStationaryBlocks.filter(blockPair => blockPair[1].x == blockPair[0].x && blockPair[1].y - blockPair[0].y == 1);
             return touchingBlocks.length > 0;
         }
@@ -121,4 +123,29 @@ class Tick implements Action {
     static isGameOver(s: State): boolean { 
         return s.stationaryBlocks.reduce((acc, curr) => curr.y == 0 || acc, false); //TODO change all accumulating functions to use reduce instead of filter
     }
+
+    static checkFullRows(s: State): State {
+        console.log("CHECKING FULL ROWS");
+        const blocksSortedIntoRows = Object.values(s.stationaryBlocks.reduce((acc, curr) => {
+            const index: number = curr.y;
+            let newAcc = {...acc};
+            !newAcc[index] ? newAcc[index] = [] : newAcc;
+            newAcc[index] = [...newAcc[index], curr];
+            console.log(newAcc)
+            return newAcc as SortedBlocks;
+          }, {} as SortedBlocks));
+          //console.log(blocksSortedIntoRows)
+        const unfilledRows = blocksSortedIntoRows.filter(row => row.length < GameConstants.GRID_WIDTH);
+        const filledRows = blocksSortedIntoRows.filter(row => row.length == GameConstants.GRID_WIDTH);
+        const newScore = filledRows.length > 0 ? s.score + 1: s.score;
+        return {
+            ...s,
+            score: newScore, //TODO check tetris score method
+            highscore: newScore > s.highscore ? newScore : s.highscore,
+            stationaryBlocks: unfilledRows.flat(),
+            removeBlocks: filledRows.flat()
+        } as State
+
+    }   
+
 }
