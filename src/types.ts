@@ -50,7 +50,8 @@ type State = Readonly<{
     score: number,
     highscore: number,
     gameEnd: boolean,
-    blockCount: number
+    blockCount: number,
+    removeBlocks: ReadonlyArray<Block> 
 }>
 
 /**

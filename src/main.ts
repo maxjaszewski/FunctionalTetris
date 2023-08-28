@@ -61,7 +61,8 @@ const initialState: State = {
   score: 0,
   highscore: 0,
   gameEnd: false,
-  blockCount: 4 // TODO
+  blockCount: 4, // TODO
+  removeBlocks: []
 } as const;
 
 /**
