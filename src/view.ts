@@ -30,6 +30,17 @@ const updateBlockView = (rootSVG: HTMLElement) => (block: Block): void => {
 }
 
 /**
+ * Updates the view of a Block
+ * 
+ * @param block Update view for this block
+ */
+
+const removeBlockView = (rootSVG: HTMLElement) => (block: Block): void => {
+    const blockElement = document.getElementById(block.id);
+    isNotNullOrUndefined(blockElement) ? rootSVG.removeChild(blockElement) : undefined;
+}
+
+/**
  * Renders the current state to the canvas.
  *
  * In MVC terms, this updates the View using the Model.
@@ -76,9 +87,8 @@ function updateView(onFinish: () => void) {
         // Add or move current tetris piece blocks
         s.currentTetrisPiece.blocks.forEach(updateBlockView(svg));
         // Remove blocks scheduled for removal
-        s.removeBlocks.map(block => document.getElementById(block.id))
-            .filter(isNotNullOrUndefined)
-            .forEach(v => svg.removeChild(v));
+        s.removeBlocks.forEach(block => removeBlockView(svg)(block));
+
         // Add a block to the preview canvas
         const cubePreview = createSvgElement(preview.namespaceURI, "rect", {
             height: `${BlockConstants.HEIGHT}`,
