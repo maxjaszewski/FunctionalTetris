@@ -22,10 +22,20 @@ class ShiftBlockLeft implements Action {
      * @param s previous state
      * @returns rotated state
      */
-    apply = (s: State): State => ({
-        ...s,
-        currentTetrisPiece: shiftPieceLeft(s.currentTetrisPiece)
-    })
+    apply = (s: State): State => {
+        return ShiftBlockLeft.canMoveLeft(s) ? 
+         ({
+            ...s,
+            currentTetrisPiece: shiftPieceLeft(s.currentTetrisPiece)
+        }) : s;
+    }
+
+    static canMoveLeft = (s: State): boolean => {
+        const blockedByBoundary: boolean = s.currentTetrisPiece.blocks.filter((block) => block.x == 0).length > 0;
+        const allPieceAndStationaryBlocks = s.currentTetrisPiece.blocks.flatMap(b => s.stationaryBlocks.map<[Block, Block]>(r => ([b, r])));
+        const blockedbyStationaryBlock: boolean = allPieceAndStationaryBlocks.filter(blockPair => blockPair[0].x == blockPair[1].x+1 && blockPair[0].y == blockPair[1].y).length > 0;
+        return !blockedByBoundary && !blockedbyStationaryBlock;
+    }
 }
 
 class ShiftBlockRight implements Action {
@@ -35,10 +45,19 @@ class ShiftBlockRight implements Action {
      * @param s previous state
      * @returns rotated state
      */
-    apply = (s: State): State => ({
+    apply = (s: State): State => {
+        return ShiftBlockRight.canMoveRight(s) ? ({
         ...s,
         currentTetrisPiece: shiftPieceRight(s.currentTetrisPiece)
-    })
+        }) : s;
+    }
+
+    static canMoveRight = (s: State): boolean => {
+        const blockedByBoundary: boolean = s.currentTetrisPiece.blocks.filter((block) => block.x == GameConstants.GRID_WIDTH-1).length > 0;
+        const allPieceAndStationaryBlocks = s.currentTetrisPiece.blocks.flatMap(b => s.stationaryBlocks.map<[Block, Block]>(r => ([b, r])));
+        const blockedbyStationaryBlock: boolean = allPieceAndStationaryBlocks.filter(blockPair => blockPair[0].x == blockPair[1].x-1 && blockPair[0].y == blockPair[1].y).length > 0;
+        return !blockedByBoundary && !blockedbyStationaryBlock;
+    }
 }
 
 class RotateBlock implements Action {
