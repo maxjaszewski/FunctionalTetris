@@ -5,6 +5,7 @@ export { updateView }
 import { State, Block } from "./types"
 import { Viewport, BlockConstants } from "./constants";
 import { show, hide, createSvgElement } from "./utils/htmlUtils";
+import { isNotNullOrUndefined } from "./utils/jsUtils";
 
 
 /**
@@ -70,9 +71,14 @@ function updateView(onFinish: () => void) {
          *
          * @param s Current state
          */
-        // Add blocks to the main grid canvas
+        // Add stationary blocks to the main grid canvas
         s.stationaryBlocks.forEach(updateBlockView(svg));
+        // Add or move current tetris piece blocks
         s.currentTetrisPiece.blocks.forEach(updateBlockView(svg));
+        // Remove blocks scheduled for removal
+        s.removeBlocks.map(block => document.getElementById(block.id))
+            .filter(isNotNullOrUndefined)
+            .forEach(v => svg.removeChild(v));
         // Add a block to the preview canvas
         const cubePreview = createSvgElement(preview.namespaceURI, "rect", {
             height: `${BlockConstants.HEIGHT}`,

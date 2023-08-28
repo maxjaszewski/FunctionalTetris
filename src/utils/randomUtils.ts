@@ -1,4 +1,4 @@
-export { RNG }
+export { RNG, isNotNullOrUndefined }
 
 /**
  * A random number generator which provides two pure functions
