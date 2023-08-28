@@ -86,6 +86,7 @@ function updateView(onFinish: () => void) {
 
         if (s.gameEnd) {
             show(gameover);
+            onFinish();
         } else {
             hide(gameover);
         }
