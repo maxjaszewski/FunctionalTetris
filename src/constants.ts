@@ -19,4 +19,4 @@ const
     BlockConstants = {
         WIDTH: Viewport.CANVAS_WIDTH / GameConstants.GRID_WIDTH,
         HEIGHT: Viewport.CANVAS_HEIGHT / GameConstants.GRID_HEIGHT,
-    };
+    } as const;
