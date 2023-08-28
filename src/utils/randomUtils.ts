@@ -23,3 +23,11 @@ abstract class RNG {
      */
     public static scale = (hash: number) => (2 * hash) / (RNG.m - 1) - 1;
 }
+
+/**
+ * Type guard for use in filters
+ * @param input something that might be null or undefined
+ */
+function isNotNullOrUndefined<T extends object>(input: null | undefined | T): input is T {
+    return input != null;
+}
