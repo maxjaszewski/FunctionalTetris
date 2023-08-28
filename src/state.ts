@@ -82,11 +82,16 @@ class Tick implements Action {
 
 
     apply(s: State): State {
+
+        // If Piece is halted, add blocks to stationary blocks and generate a new block
         const newState: State = Tick.tetrisPieceBlocked(s) ? Tick.moveTetrisPieceToStationaryAndGenerateNewPiece(s): {
             ...s,
             currentTetrisPiece: shiftPieceDown(s.currentTetrisPiece)
         };
-        return newState
+
+        // Game over if block height for any column in new state is greater than grid height
+
+        return Tick.isGameOver(newState) ? {...newState, gameEnd: true} : newState;
     }
 
     static tetrisPieceBlocked(s: State): boolean {
@@ -111,5 +116,9 @@ class Tick implements Action {
             currentTetrisPiece: generateNewRandomPiece(s),
             blockCount: s.blockCount+4
         }
+    }
+
+    static isGameOver(s: State): boolean { 
+        return s.stationaryBlocks.filter(block => block.y == 0).length > 0;
     }
 }
