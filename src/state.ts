@@ -84,7 +84,7 @@ class Tick implements Action {
     apply(s: State): State {
 
         // If Piece is halted, add blocks to stationary blocks and generate a new block
-        const newStateHalted: State = Tick.tetrisPieceBlocked(s) ? Tick.moveTetrisPieceToStationaryAndGenerateNewPiece(s): {
+        const newStateHalted: State = Tick.tetrisPieceAtBottom(s) || Tick.tetrisPieceBlocked(s) ? Tick.moveTetrisPieceToStationaryAndGenerateNewPiece(s): {
             ...s,
             currentTetrisPiece: shiftPieceDown(s.currentTetrisPiece)
         };
@@ -97,18 +97,14 @@ class Tick implements Action {
         return Tick.isGameOver(newStateClearRows) ? {...newStateClearRows, gameEnd: true} : newStateClearRows;
     }
 
-    static tetrisPieceBlocked(s: State): boolean {
+    static tetrisPieceAtBottom = (s: State): boolean => {
+        return s.currentTetrisPiece.blocks.filter(block => block.y == GameConstants.GRID_HEIGHT - 1).length > 0
+    }
 
-        const tetrisPieceAtBottom = (): boolean => {
-            return s.currentTetrisPiece.blocks.filter(block => block.y == GameConstants.GRID_HEIGHT - 1).length > 0
-        }
-
-        const tetrisPieceBlocked = (): boolean => {
-            const allPieceAndStationaryBlocks = s.currentTetrisPiece.blocks.flatMap(b => s.stationaryBlocks.map<[Block, Block]>(r => ([b, r])));
-            const touchingBlocks = allPieceAndStationaryBlocks.filter(blockPair => blockPair[1].x == blockPair[0].x && blockPair[1].y - blockPair[0].y == 1);
-            return touchingBlocks.length > 0;
-        }
-        return tetrisPieceAtBottom() || tetrisPieceBlocked();
+    static tetrisPieceBlocked = (s: State): boolean => {
+        const allPieceAndStationaryBlocks = s.currentTetrisPiece.blocks.flatMap(b => s.stationaryBlocks.map<[Block, Block]>(r => ([b, r])));
+        const touchingBlocks = allPieceAndStationaryBlocks.filter(blockPair => blockPair[1].x == blockPair[0].x && blockPair[1].y - blockPair[0].y == 1);
+        return touchingBlocks.length > 0;
     }
 
     static moveTetrisPieceToStationaryAndGenerateNewPiece(s: State): State {
@@ -125,16 +121,13 @@ class Tick implements Action {
     }
 
     static checkFullRows(s: State): State {
-        console.log("CHECKING FULL ROWS");
         const blocksSortedIntoRows = Object.values(s.stationaryBlocks.reduce((acc, curr) => {
             const index: number = curr.y;
             let newAcc = {...acc};
             !newAcc[index] ? newAcc[index] = [] : newAcc;
             newAcc[index] = [...newAcc[index], curr];
-            console.log(newAcc)
             return newAcc as SortedBlocks;
           }, {} as SortedBlocks));
-          //console.log(blocksSortedIntoRows)
         const unfilledRows = blocksSortedIntoRows.filter(row => row.length < GameConstants.GRID_WIDTH);
         const filledRows = blocksSortedIntoRows.filter(row => row.length == GameConstants.GRID_WIDTH);
         const newScore = filledRows.length > 0 ? s.score + 1: s.score;
