@@ -37,8 +37,8 @@ const generateRandomPiece = (seed: number) => {
 
 const generatePiece = (piece: number) => (colour: Block): TetrisPiece => {
     return {
-        x: 0,
-        y: 0,
+        x: 3,
+        y: -2,
         matrix: generatePieceMatrix(piece)(colour)
 
     }
@@ -48,23 +48,23 @@ const generatePieceMatrix = (piece: number) => (colour: Block): BlockMatrix => {
     switch (piece) {
         case 1: //O
             return [
-                [null, colour, colour, null],
-                [null, colour, colour, null],
                 [null, null, null, null],
+                [null, colour, colour, null],
+                [null, colour, colour, null],
                 [null, null, null, null]
             ];
         case 2: //J
             return [
+                [null, null, null, null],
                 [null, colour, null, null],
                 [null, colour, colour, colour],
-                [null, null, null, null],
                 [null, null, null, null]
             ];
         case 3: //L
             return [
+                [null, null, null, null],
                 [null, null, null, colour],
                 [null, colour, colour, colour],
-                [null, null, null, null],
                 [null, null, null, null]
             ];
         case 4: //I
@@ -76,24 +76,24 @@ const generatePieceMatrix = (piece: number) => (colour: Block): BlockMatrix => {
             ];
         case 5: //S
             return [
+                [null, null, null, null],
                 [null, null, colour, colour],
                 [null, colour, colour, null],
-                [null, null, null, null],
                 [null, null, null, null]
             ];
         case 6: //Z
             return [
+                [null, null, null, null],
                 [null, colour, colour, null],
                 [null, null, colour, colour],
-                [null, null, null, null],
                 [null, null, null, null]
             ];
         default: //T
             return [
+                [null, null, null, null],
                 [null, null, colour, null],
                 [null, colour, colour, colour],
                 [null, null, null, null],
-                [null, null, null, null]
             ];
         
 
