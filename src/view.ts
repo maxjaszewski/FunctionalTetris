@@ -16,7 +16,7 @@ import { pieceToMatrix } from "./utils/matrixUtils";
  */
 
 const clearSVGBoard = (rootSVG: HTMLElement): void => {
-    Array.from(rootSVG.children).filter(element => element.classList.contains("block")).forEach(block => rootSVG.removeChild(block));   
+    Array.from(rootSVG.children).filter(element => element.classList.contains("block")).forEach(block => rootSVG.removeChild(block));
 
 }
 
@@ -31,7 +31,7 @@ const paintMatrix = (rootSVG: HTMLElement) => (matrix: BlockMatrix): void => {
  */
 
 const createBlockView = (rootSVG: HTMLElement) => (block: Block) => (row: number) => (column: number): void => {
-    if ( block != null ) {
+    if (block != null) {
         function appendNewRect() {
             const v = createSvgElement(rootSVG.namespaceURI, "rect");
             rootSVG.appendChild(v)
@@ -45,7 +45,7 @@ const createBlockView = (rootSVG: HTMLElement) => (block: Block) => (row: number
         b.setAttribute("style", `fill: ${block}`);
         b.setAttribute("class", "block");
     }
-    
+
 }
 
 /**

@@ -29,9 +29,9 @@ const generateRandomPiece = (seed: number) => {
     const scaleRGB = RNG.discrete(0)(255);
     const scalePiece = RNG.discrete(1)(8);
     const pieceID: number = scalePiece(RNG.hash(seed));
-    const rgb1: number = RNG.hash(seed+1);
-    const rgb2: number = RNG.hash(seed+2);
-    const rgb3: number = RNG.hash(seed+3);
+    const rgb1: number = RNG.hash(seed + 1);
+    const rgb2: number = RNG.hash(seed + 2);
+    const rgb3: number = RNG.hash(seed + 3);
     return generatePiece(pieceID)(`rgb(${scaleRGB(rgb1)}, ${scaleRGB(rgb2)}, ${scaleRGB(rgb3)})`);
 }
 
@@ -95,7 +95,7 @@ const generatePieceMatrix = (piece: number) => (colour: Block): BlockMatrix => {
                 [null, colour, colour, colour],
                 [null, null, null, null],
             ];
-        
 
-    } 
+
+    }
 }

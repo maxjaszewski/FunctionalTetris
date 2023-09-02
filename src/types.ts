@@ -31,7 +31,7 @@ type BlockMatrix = ReadonlyArray<ReadonlyArray<Block>>;
 /**
  * Tetris pieces
  */
-type TetrisPiece  = Readonly<{
+type TetrisPiece = Readonly<{
     x: number,
     y: number,
     matrix: BlockMatrix

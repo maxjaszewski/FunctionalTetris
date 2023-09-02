@@ -49,14 +49,14 @@ export function main() {
     key$.pipe(
       filter(({ code }) => code === keyCode),
       filter(({ repeat }) => !repeat)
-      );
+    );
 
   // Keypress stream per key, output actions
   const shiftBlockLeft$ = fromKey("KeyA").pipe(map(_ => new ShiftBlockLeft()));
   const shiftBlockRight$ = fromKey("KeyD").pipe(map(_ => new ShiftBlockRight()));
   const dropBlock$ = fromKey("KeyS").pipe(map(_ => new RotateBlock()));
   const tick$ = interval(GameConstants.TICK_RATE_MS).pipe(map(elapsed => new Tick(elapsed)));
-  
+
   const resetButton = document.getElementById('restart-button') as HTMLElement;
   const resetButton$ = fromEvent(resetButton, 'click').pipe(map(_ => new Restart()));
 

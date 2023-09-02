@@ -31,13 +31,13 @@ class ShiftBlockLeft implements Action {
         }
 
         const pieceLeft: TetrisPiece = shiftPieceLeft(s.currentTetrisPiece);
-        return ! ( overlayConflict(s.stationaryBlocks)(pieceToMatrix(pieceLeft)) || pieceLeft.x + getLeftMost(pieceLeft.matrix) < 0 ) ? 
-         ({
-            ...s,
-            currentTetrisPiece: pieceLeft
-        }) : s;
+        return !(overlayConflict(s.stationaryBlocks)(pieceToMatrix(pieceLeft)) || pieceLeft.x + getLeftMost(pieceLeft.matrix) < 0) ?
+            ({
+                ...s,
+                currentTetrisPiece: pieceLeft
+            }) : s;
     }
-    
+
     static canMoveLeft = (s: State): boolean => {
         return true
     }
@@ -58,9 +58,9 @@ class ShiftBlockRight implements Action {
 
         const pieceRight: TetrisPiece = shiftPieceRight(s.currentTetrisPiece);
 
-        return ! ( overlayConflict(s.stationaryBlocks)(pieceToMatrix(pieceRight)) || pieceRight.x + getRightMost(pieceRight.matrix) > GameConstants.GRID_WIDTH-1 ) ? ({
-        ...s,
-        currentTetrisPiece: shiftPieceRight(s.currentTetrisPiece)
+        return !(overlayConflict(s.stationaryBlocks)(pieceToMatrix(pieceRight)) || pieceRight.x + getRightMost(pieceRight.matrix) > GameConstants.GRID_WIDTH - 1) ? ({
+            ...s,
+            currentTetrisPiece: shiftPieceRight(s.currentTetrisPiece)
         }) : s;
     }
 
@@ -77,7 +77,7 @@ class RotateBlock implements Action {
      * @returns rotated state
      */
     apply = (s: State) => {
-        
+
         if (s.gameEnd) {
             return s
         }
@@ -112,34 +112,34 @@ class Tick implements Action {
 
         const newState: State = {
             ...s,
-            upComingTetrisPiece: Tick.tetrisPieceBlocked(s)? generateRandomPiece(s.seed): s.upComingTetrisPiece,
+            upComingTetrisPiece: Tick.tetrisPieceBlocked(s) ? generateRandomPiece(s.seed) : s.upComingTetrisPiece,
             currentTetrisPiece: Tick.tetrisPieceBlocked(s) ? s.upComingTetrisPiece : shiftPieceDown(s.currentTetrisPiece),
             stationaryBlocks: Tick.tetrisPieceBlocked(s) ? overlay(s.stationaryBlocks)(pieceToMatrix(s.currentTetrisPiece)) : s.stationaryBlocks,
             seed: RNG.hash(s.seed)
         }
-        
+
         const numFullRows: number = newState.stationaryBlocks.filter(row => isFullRow(row)).length;
-        const newTopRows: BlockMatrix = Array.from({ length: numFullRows }, () => Array.from({ length: GameConstants.GRID_WIDTH}, () => null))
+        const newTopRows: BlockMatrix = Array.from({ length: numFullRows }, () => Array.from({ length: GameConstants.GRID_WIDTH }, () => null))
         const removeFullRows: State = {
             ...newState,
             score: newState.score + numFullRows,
             highscore: Math.max(newState.highscore, newState.score + numFullRows),
-            stationaryBlocks: numFullRows > 0 ? [...newTopRows, ...newState.stationaryBlocks.filter(row => ! (isFullRow(row)))] : newState.stationaryBlocks
+            stationaryBlocks: numFullRows > 0 ? [...newTopRows, ...newState.stationaryBlocks.filter(row => !(isFullRow(row)))] : newState.stationaryBlocks
         }
 
         const gameOverState: State = {
             ...removeFullRows,
-            gameEnd: hasBlock(removeFullRows.stationaryBlocks[0])   
+            gameEnd: hasBlock(removeFullRows.stationaryBlocks[0])
         }
 
         return gameOverState;
     }
 
     static tetrisPieceBlocked = (s: State): boolean => {
-        return ( s.currentTetrisPiece.y + getBottomMost(s.currentTetrisPiece.matrix) == GameConstants.GRID_HEIGHT - 1 ) || ( overlayConflict(s.stationaryBlocks)(pieceToMatrix(shiftPieceDown(s.currentTetrisPiece))) );
+        return (s.currentTetrisPiece.y + getBottomMost(s.currentTetrisPiece.matrix) == GameConstants.GRID_HEIGHT - 1) || (overlayConflict(s.stationaryBlocks)(pieceToMatrix(shiftPieceDown(s.currentTetrisPiece))));
     }
 
-    static isGameOver(s: State): boolean { 
+    static isGameOver(s: State): boolean {
         return s.stationaryBlocks[0].reduce((acc, curr) => acc || curr ? true : false, false) //TODO change all accumulating functions to use reduce instead of filter
     }
 
@@ -156,7 +156,7 @@ class Restart implements Action {
         return {
             ...s,
             currentTetrisPiece: generateRandomPiece(s.seed),
-            upComingTetrisPiece: generateRandomPiece(s.seed+1),
+            upComingTetrisPiece: generateRandomPiece(s.seed + 1),
             stationaryBlocks: initialize2DArray(GameConstants.GRID_HEIGHT, GameConstants.GRID_WIDTH),
             level: 1,
             gameEnd: false
