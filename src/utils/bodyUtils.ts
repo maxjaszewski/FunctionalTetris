@@ -28,9 +28,9 @@ const generateNewPiece = (): TetrisPiece => {
         x: 0,
         y: 0,
         matrix: [
+            [null, "red", "red", null],
+            [null, "red", "red", null],
             [null, null, null, null],
-            [null, "red", "red", null],
-            [null, "red", "red", null],
             [null, null, null, null]
           ]
     }
