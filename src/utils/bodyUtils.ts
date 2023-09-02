@@ -1,3 +1,4 @@
+import { JPiece } from "../constants";
 import { Block, State, TetrisPiece } from "../types";
 
 export { shiftPieceDown, shiftPieceLeft, shiftPieceRight, generateNewPiece }
@@ -24,14 +25,5 @@ const shiftPieceRight = (tetrisPiece: TetrisPiece): TetrisPiece => {
 }
 
 const generateNewPiece = (): TetrisPiece => {
-    return {
-        x: 0,
-        y: 0,
-        matrix: [
-            [null, "red", "red", null],
-            [null, "red", "red", null],
-            [null, null, null, null],
-            [null, null, null, null]
-          ]
-    }
+    return JPiece
 }

@@ -66,9 +66,19 @@ class RotateBlock implements Action {
      * @param s previous state
      * @returns rotated state
      */
-    apply = (s: State) => ({
-        ...s
-    })
+    apply = (s: State) => {
+    
+        const rotatedPiece: TetrisPiece = {
+            ...s.currentTetrisPiece,
+            matrix: rotate(s.currentTetrisPiece.matrix)
+        }
+
+        return {
+            ...s,
+            currentTetrisPiece: rotatedPiece
+        }
+
+    }
 }
 
 class Tick implements Action {

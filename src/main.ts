@@ -14,7 +14,7 @@
 
 import "./style.css";
 
-import { GameConstants, Viewport, BlockConstants } from "./constants";
+import { GameConstants, Viewport, BlockConstants, OPiece } from "./constants";
 import { State, Key, Event, Action, Block, TetrisPiece } from "./types";
 import { ShiftBlockLeft, ShiftBlockRight, RotateBlock, Tick, reduceState } from "./state"
 import { updateView } from "./view";
@@ -37,7 +37,7 @@ const initialTetrisPiece: TetrisPiece = {
 // Define initial state of game
 const initialState: State = {
   upComingTetrisPiece: initialTetrisPiece,
-  currentTetrisPiece: initialTetrisPiece,
+  currentTetrisPiece: OPiece,
   stationaryBlocks: initialize2DArray(GameConstants.GRID_HEIGHT, GameConstants.GRID_WIDTH),
   level: 1,
   score: 0,
