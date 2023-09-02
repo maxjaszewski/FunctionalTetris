@@ -94,7 +94,8 @@ class Tick implements Action {
     apply(s: State): State {
         const newState: State = {
             ...s,
-            currentTetrisPiece: Tick.tetrisPieceBlocked(s) ? generateRandomPiece(s.seed) : shiftPieceDown(s.currentTetrisPiece),
+            upComingTetrisPiece: Tick.tetrisPieceBlocked(s)? generateRandomPiece(s.seed): s.upComingTetrisPiece,
+            currentTetrisPiece: Tick.tetrisPieceBlocked(s) ? s.upComingTetrisPiece : shiftPieceDown(s.currentTetrisPiece),
             stationaryBlocks: Tick.tetrisPieceBlocked(s) ? overlay(s.stationaryBlocks)(pieceToMatrix(s.currentTetrisPiece)) : s.stationaryBlocks,
             seed: RNG.hash(s.seed)
         }

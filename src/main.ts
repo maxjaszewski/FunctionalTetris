@@ -46,7 +46,10 @@ export function main() {
 
   // Function to filter keypress stream by key
   const fromKey = (keyCode: Key) =>
-    key$.pipe(filter(({ code }) => code === keyCode));
+    key$.pipe(
+      filter(({ code }) => code === keyCode),
+      filter(({ repeat }) => !repeat)
+      );
 
   // Keypress stream per key, output actions
   const shiftBlockLeft$ = fromKey("KeyA").pipe(map(_ => new ShiftBlockLeft()));

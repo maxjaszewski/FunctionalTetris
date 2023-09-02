@@ -84,20 +84,15 @@ function updateView(onFinish: () => void) {
 
         // Clear Board
         clearSVGBoard(svg);
+        clearSVGBoard(preview);
         // Paint stationary blocks
         const svgPaint = paintMatrix(svg);
         svgPaint(s.stationaryBlocks);
         svgPaint(pieceToMatrix(s.currentTetrisPiece));
 
-        // Add a block to the preview canvas
-        const cubePreview = createSvgElement(preview.namespaceURI, "rect", {
-            height: `${BlockConstants.HEIGHT}`,
-            width: `${BlockConstants.WIDTH}`,
-            x: `${BlockConstants.WIDTH * 2}`,
-            y: `${BlockConstants.HEIGHT}`,
-            style: "fill: green",
-        });
-        preview.appendChild(cubePreview);
+
+        const previewPaint = paintMatrix(preview);
+        previewPaint(s.upComingTetrisPiece.matrix)
 
 
         if (s.gameEnd) {
