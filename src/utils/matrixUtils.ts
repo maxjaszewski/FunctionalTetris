@@ -1,7 +1,8 @@
+import { min } from "rxjs";
 import { GameConstants } from "../constants";
 import { Block, BlockMatrix, TetrisPiece } from "../types";
 
-export { initialize2DArray, pieceToMatrix, overlay, overlayConflict, getBottomY, rowHasBlock }
+export { initialize2DArray, pieceToMatrix, overlay, overlayConflict, getLeftMost, getRightMost, getTopMost, getBottomMost, hasBlock, transpose, rotate }
 
 
 
@@ -27,7 +28,7 @@ function pieceToMatrix(tetrisPiece: TetrisPiece): BlockMatrix {
 
 }
 
-function rowHasBlock(matrixRow: ReadonlyArray<Block>): boolean {
+function hasBlock(matrixRow: ReadonlyArray<Block>): boolean {
     return matrixRow.reduce((accum, curr) =>  (accum || (curr != null)), false);
 }
 
@@ -39,19 +40,34 @@ const overlay: (a: BlockMatrix) => (b: BlockMatrix) => BlockMatrix = matrixA => 
     return matrixA.map((currRow, rowNum) => currRow.map((_,colNum) => matrixA[rowNum][colNum] || matrixB[rowNum][colNum] )   );  
 }
 
-function getLeftX(tetrisPiece: TetrisPiece): number {
-    return tetrisPiece.y + tetrisPiece.matrix.reduce((accum, currRow, currRowNum) => rowHasBlock(currRow) ? currRowNum : accum, 0)
+function getLeftMost(matrix: BlockMatrix): number {
+    return transpose(matrix).map((row, rowIndex) => ({index: rowIndex, bool: hasBlock(row)})).filter(rowBool => rowBool.bool)[0].index;
 }
 
-function getRightX(tetrisPiece: TetrisPiece): number {
-    return tetrisPiece.y + tetrisPiece.matrix.reduce((accum, currRow, currRowNum) => rowHasBlock(currRow) ? currRowNum : accum, 0)
+function getRightMost(matrix: BlockMatrix): number {
+    const rowBooleans = transpose(matrix).map((row, rowIndex) => ({index: rowIndex, bool: hasBlock(row)})).filter(rowBool => rowBool.bool);
+    return rowBooleans[rowBooleans.length - 1].index;
 }
 
-function getTopY(tetrisPiece: TetrisPiece): number {
-    return tetrisPiece.y + tetrisPiece.matrix.reduce((accum, currRow, currRowNum) => rowHasBlock(currRow) ? currRowNum : accum, 0)
+function getTopMost(matrix: BlockMatrix): number {
+    return matrix.map((row, rowIndex) => ({index: rowIndex, bool: hasBlock(row)})).filter(rowBool => rowBool.bool)[-1].index;
 }
 
-function getBottomY(tetrisPiece: TetrisPiece): number {
-    return tetrisPiece.y + tetrisPiece.matrix.reduce((accum, currRow, currRowNum) => rowHasBlock(currRow) ? currRowNum : accum, 0)
+function getBottomMost(matrix: BlockMatrix): number {
+    const rowBooleans = matrix.map((row, rowIndex) => ({index: rowIndex, bool: hasBlock(row)})).filter(rowBool => rowBool.bool);
+    return rowBooleans[rowBooleans.length - 1].index;
 }
+
+const getColumn = (matrix: BlockMatrix) => (column: number): ReadonlyArray<Block> => {
+    return transpose(matrix)[column];
+}
+
+const transpose = (matrix: BlockMatrix): BlockMatrix => {    
+    return matrix.map((row, rowIndex) => row.map((col, colIndex) => matrix[colIndex][rowIndex]));
+}
+
+function rotate(matrix: BlockMatrix) {
+    //TODO https://stackoverflow.com/questions/15170942/how-to-rotate-a-matrix-in-an-array-in-javascript
+    return matrix[0].map((val, index) => matrix.map(row => row[index]).reverse())
+  }
 
