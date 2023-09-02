@@ -23,7 +23,7 @@ abstract class RNG {
      */
     public static scale = (hash: number) => (2 * hash) / (RNG.m - 1) - 1;
 
-    public static discrete = (low: number) => (high: number) => (hash: number) => Math.floor(((2 * hash) / (RNG.m - 1)) * (high-low) + low);
+    public static discrete = (low: number) => (high: number) => (hash: number):  number => Math.floor( ( ((hash) / (RNG.m - 1) ) * (high-low)) + low);
 }
 
 
