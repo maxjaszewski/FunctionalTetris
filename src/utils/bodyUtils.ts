@@ -27,7 +27,7 @@ const shiftPieceRight = (tetrisPiece: TetrisPiece): TetrisPiece => {
 
 const generateRandomPiece = (seed: number) => {
     const scaleRGB = RNG.discrete(0)(255);
-    const scalePiece = RNG.discrete(1)(5);
+    const scalePiece = RNG.discrete(1)(8);
     const pieceID: number = scalePiece(RNG.hash(seed));
     const rgb1: number = RNG.hash(seed+1);
     const rgb2: number = RNG.hash(seed+2);
@@ -74,14 +74,14 @@ const generatePieceMatrix = (piece: number) => (colour: Block): BlockMatrix => {
                 [null, colour, null, null],
                 [null, colour, null, null]
             ];
-        case 4: //S
+        case 5: //S
             return [
                 [null, null, colour, colour],
                 [null, colour, colour, null],
                 [null, null, null, null],
                 [null, null, null, null]
             ];
-        case 5: //Z
+        case 6: //Z
             return [
                 [null, colour, colour, null],
                 [null, null, colour, colour],
