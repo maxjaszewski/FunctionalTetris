@@ -2,7 +2,7 @@
 import { GameConstants } from "./constants";
 import { State, Action, Block, TetrisPiece } from "./types"
 import { generateNewPiece, shiftPieceDown, shiftPieceLeft, shiftPieceRight } from "./utils/bodyUtils";
-import { getBottomMost, overlay, overlayConflict, pieceToMatrix, hasBlock, rotate } from "./utils/matrixUtils";
+import { getBottomMost, overlay, overlayConflict, pieceToMatrix, hasBlock, rotate, getLeftMost, getRightMost } from "./utils/matrixUtils";
 export { ShiftBlockLeft, ShiftBlockRight, RotateBlock, reduceState, Tick }
 
 const
@@ -25,7 +25,8 @@ class ShiftBlockLeft implements Action {
      */
     apply = (s: State): State => {
         const pieceLeft: TetrisPiece = shiftPieceLeft(s.currentTetrisPiece);
-        return ! overlayConflict(s.stationaryBlocks)(pieceToMatrix(pieceLeft)) ? 
+        console.log()
+        return ! ( overlayConflict(s.stationaryBlocks)(pieceToMatrix(pieceLeft)) || pieceLeft.x + getLeftMost(pieceLeft.matrix) < 0 ) ? 
          ({
             ...s,
             currentTetrisPiece: pieceLeft
@@ -47,7 +48,7 @@ class ShiftBlockRight implements Action {
     apply = (s: State): State => {
         const pieceRight: TetrisPiece = shiftPieceRight(s.currentTetrisPiece);
 
-        return ! overlayConflict(s.stationaryBlocks)(pieceToMatrix(pieceRight)) ? ({
+        return ! ( overlayConflict(s.stationaryBlocks)(pieceToMatrix(pieceRight)) || pieceRight.x + getRightMost(pieceRight.matrix) > GameConstants.GRID_WIDTH-1 ) ? ({
         ...s,
         currentTetrisPiece: shiftPieceRight(s.currentTetrisPiece)
         }) : s;
