@@ -1,7 +1,7 @@
 import { GameConstants } from "../constants";
 import { Block, BlockMatrix, TetrisPiece } from "../types";
 
-export { initialize2DArray, pieceToMatrix, overlay, overlayConflict, getLowestY, rowHasBlock }
+export { initialize2DArray, pieceToMatrix, overlay, overlayConflict, getBottomY, rowHasBlock }
 
 
 
@@ -28,11 +28,7 @@ function pieceToMatrix(tetrisPiece: TetrisPiece): BlockMatrix {
 }
 
 function rowHasBlock(matrixRow: ReadonlyArray<Block>): boolean {
-    return matrixRow.reduce((accum, curr) => accum || (curr != null), false);
-}
-
-function getLowestY(tetrisPiece: TetrisPiece): number {
-    return tetrisPiece.y + tetrisPiece.matrix.reduce((accum, currRow, currRowNum) => rowHasBlock(currRow) ? currRowNum : accum, 0)
+    return matrixRow.reduce((accum, curr) =>  (accum || (curr != null)), false);
 }
 
 const overlayConflict: (a: BlockMatrix) => (b: BlockMatrix) => boolean = matrixA => matrixB => {
@@ -41,5 +37,21 @@ const overlayConflict: (a: BlockMatrix) => (b: BlockMatrix) => boolean = matrixA
 
 const overlay: (a: BlockMatrix) => (b: BlockMatrix) => BlockMatrix = matrixA => matrixB => {
     return matrixA.map((currRow, rowNum) => currRow.map((_,colNum) => matrixA[rowNum][colNum] || matrixB[rowNum][colNum] )   );  
+}
+
+function getLeftX(tetrisPiece: TetrisPiece): number {
+    return tetrisPiece.y + tetrisPiece.matrix.reduce((accum, currRow, currRowNum) => rowHasBlock(currRow) ? currRowNum : accum, 0)
+}
+
+function getRightX(tetrisPiece: TetrisPiece): number {
+    return tetrisPiece.y + tetrisPiece.matrix.reduce((accum, currRow, currRowNum) => rowHasBlock(currRow) ? currRowNum : accum, 0)
+}
+
+function getTopY(tetrisPiece: TetrisPiece): number {
+    return tetrisPiece.y + tetrisPiece.matrix.reduce((accum, currRow, currRowNum) => rowHasBlock(currRow) ? currRowNum : accum, 0)
+}
+
+function getBottomY(tetrisPiece: TetrisPiece): number {
+    return tetrisPiece.y + tetrisPiece.matrix.reduce((accum, currRow, currRowNum) => rowHasBlock(currRow) ? currRowNum : accum, 0)
 }
 

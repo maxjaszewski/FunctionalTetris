@@ -2,7 +2,7 @@
 import { GameConstants } from "./constants";
 import { State, Action, Block, TetrisPiece } from "./types"
 import { generateNewPiece, shiftPieceDown, shiftPieceLeft, shiftPieceRight } from "./utils/bodyUtils";
-import { getLowestY, overlay, overlayConflict, pieceToMatrix, rowHasBlock } from "./utils/matrixUtils";
+import { getBottomY, overlay, overlayConflict, pieceToMatrix, rowHasBlock } from "./utils/matrixUtils";
 export { ShiftBlockLeft, ShiftBlockRight, RotateBlock, reduceState, Tick }
 
 const
@@ -24,10 +24,11 @@ class ShiftBlockLeft implements Action {
      * @returns rotated state
      */
     apply = (s: State): State => {
-        return ShiftBlockLeft.canMoveLeft(s) ? 
+        const pieceLeft: TetrisPiece = shiftPieceLeft(s.currentTetrisPiece);
+        return ! overlayConflict(s.stationaryBlocks)(pieceToMatrix(pieceLeft)) ? 
          ({
             ...s,
-            currentTetrisPiece: shiftPieceLeft(s.currentTetrisPiece)
+            currentTetrisPiece: pieceLeft
         }) : s;
     }
     
@@ -44,7 +45,9 @@ class ShiftBlockRight implements Action {
      * @returns rotated state
      */
     apply = (s: State): State => {
-        return ShiftBlockRight.canMoveRight(s) ? ({
+        const pieceRight: TetrisPiece = shiftPieceRight(s.currentTetrisPiece);
+
+        return ! overlayConflict(s.stationaryBlocks)(pieceToMatrix(pieceRight)) ? ({
         ...s,
         currentTetrisPiece: shiftPieceRight(s.currentTetrisPiece)
         }) : s;
@@ -84,6 +87,7 @@ class Tick implements Action {
             stationaryBlocks: Tick.tetrisPieceBlocked(s) ? overlay(s.stationaryBlocks)(pieceToMatrix(s.currentTetrisPiece)) : s.stationaryBlocks
         }
 
+        console.log(rowHasBlock(newState.stationaryBlocks[0]))
         const gameOverState: State = {
             ...newState,
             gameEnd: rowHasBlock(newState.stationaryBlocks[0])   
@@ -93,7 +97,7 @@ class Tick implements Action {
     }
 
     static tetrisPieceBlocked = (s: State): boolean => {
-        return ( getLowestY(s.currentTetrisPiece) == GameConstants.GRID_HEIGHT - 1 ) || ( overlayConflict(s.stationaryBlocks)(pieceToMatrix(shiftPieceDown(s.currentTetrisPiece))) );
+        return ( getBottomY(s.currentTetrisPiece) == GameConstants.GRID_HEIGHT - 1 ) || ( overlayConflict(s.stationaryBlocks)(pieceToMatrix(shiftPieceDown(s.currentTetrisPiece))) );
     }
 
     static isGameOver(s: State): boolean { 
