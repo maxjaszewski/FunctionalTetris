@@ -38,7 +38,7 @@ const initialTetrisPiece: TetrisPiece = {
 const initialState: State = {
   upComingTetrisPiece: initialTetrisPiece,
   currentTetrisPiece: initialTetrisPiece,
-  stationaryBlocks: initialize2DArray(GameConstants.GRID_HEIGHT, GameConstants.GRID_HEIGHT),
+  stationaryBlocks: initialize2DArray(GameConstants.GRID_HEIGHT, GameConstants.GRID_WIDTH),
   level: 1,
   score: 0,
   highscore: 0,

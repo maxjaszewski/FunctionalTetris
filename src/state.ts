@@ -1,8 +1,8 @@
 // Functions and objects that mutate State (CHANGE MODEL)
 import { GameConstants } from "./constants";
-import { State, Action, Block, TetrisPiece } from "./types"
+import { State, Action, Block, TetrisPiece, BlockMatrix } from "./types"
 import { generateNewPiece, shiftPieceDown, shiftPieceLeft, shiftPieceRight } from "./utils/bodyUtils";
-import { getBottomMost, overlay, overlayConflict, pieceToMatrix, hasBlock, rotate, getLeftMost, getRightMost } from "./utils/matrixUtils";
+import { getBottomMost, overlay, overlayConflict, pieceToMatrix, hasBlock, rotate, getLeftMost, getRightMost, isFullRow } from "./utils/matrixUtils";
 export { ShiftBlockLeft, ShiftBlockRight, RotateBlock, reduceState, Tick }
 
 const
@@ -81,16 +81,24 @@ class Tick implements Action {
 
 
     apply(s: State): State {
-
         const newState: State = {
             ...s,
             currentTetrisPiece: Tick.tetrisPieceBlocked(s) ? generateNewPiece() : shiftPieceDown(s.currentTetrisPiece),
             stationaryBlocks: Tick.tetrisPieceBlocked(s) ? overlay(s.stationaryBlocks)(pieceToMatrix(s.currentTetrisPiece)) : s.stationaryBlocks
         }
+        
+        const numFullRows: number = newState.stationaryBlocks.filter(row => isFullRow(row)).length;
+        const newTopRows: BlockMatrix = Array.from({ length: numFullRows }, () => Array.from({ length: GameConstants.GRID_WIDTH}, () => null))
+        const removeFullRows: State = {
+            ...newState,
+            score: newState.score + numFullRows,
+            highscore: Math.max(newState.highscore, newState.score + numFullRows),
+            stationaryBlocks: numFullRows > 0 ? [...newTopRows, ...newState.stationaryBlocks.filter(row => ! (isFullRow(row)))] : newState.stationaryBlocks
+        }
 
         const gameOverState: State = {
-            ...newState,
-            gameEnd: hasBlock(newState.stationaryBlocks[0])   
+            ...removeFullRows,
+            gameEnd: hasBlock(removeFullRows.stationaryBlocks[0])   
         }
 
         return gameOverState;

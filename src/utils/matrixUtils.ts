@@ -2,7 +2,7 @@ import { min } from "rxjs";
 import { GameConstants } from "../constants";
 import { Block, BlockMatrix, TetrisPiece } from "../types";
 
-export { initialize2DArray, pieceToMatrix, overlay, overlayConflict, getLeftMost, getRightMost, getTopMost, getBottomMost, hasBlock, transpose, rotate }
+export { initialize2DArray, pieceToMatrix, overlay, overlayConflict, getLeftMost, getRightMost, getTopMost, getBottomMost, hasBlock, transpose, rotate, isFullRow }
 
 
 
@@ -29,11 +29,13 @@ function pieceToMatrix(tetrisPiece: TetrisPiece): BlockMatrix {
 }
 
 function hasBlock(matrixRow: ReadonlyArray<Block>): boolean {
-    return matrixRow.reduce((accum, curr) =>  (accum || (curr != null)), false);
+    return matrixRow.reduce((accum, curr) => (accum || (curr != null)), false);
 }
 
 function isFullRow(matrixRow: ReadonlyArray<Block>): boolean {
-    return matrixRow.reduce((accum, curr) => (accum && (curr != null)), true)
+    return matrixRow.reduce((accum, curr) => {
+        return (accum && (curr != null))
+    }, true)
 }
 
 const overlayConflict: (a: BlockMatrix) => (b: BlockMatrix) => boolean = matrixA => matrixB => {
