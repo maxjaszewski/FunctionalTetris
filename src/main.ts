@@ -16,7 +16,7 @@ import "./style.css";
 
 import { GameConstants, Viewport, BlockConstants, OPiece } from "./constants";
 import { State, Key, Event, Action, Block, TetrisPiece } from "./types";
-import { ShiftBlockLeft, ShiftBlockRight, RotateBlock, Tick, reduceState } from "./state"
+import { ShiftBlockLeft, ShiftBlockRight, RotateBlock, Tick, reduceState, Restart } from "./state"
 import { updateView } from "./view";
 
 import { fromEvent, interval, merge, Subscription, Observable } from "rxjs";
@@ -56,14 +56,17 @@ export function main() {
   const shiftBlockRight$ = fromKey("KeyD").pipe(map(_ => new ShiftBlockRight()));
   const dropBlock$ = fromKey("KeyS").pipe(map(_ => new RotateBlock()));
   const tick$ = interval(GameConstants.TICK_RATE_MS).pipe(map(elapsed => new Tick(elapsed)));
+  
+  const resetButton = document.getElementById('restart-button') as HTMLElement;
+  const resetButton$ = fromEvent(resetButton, 'click').pipe(map(_ => new Restart()));
+
 
   // Merge observables to action stream
-  const action$: Observable<Action> = merge(tick$, shiftBlockLeft$, shiftBlockRight$, dropBlock$);
+  const action$: Observable<Action> = merge(tick$, shiftBlockLeft$, shiftBlockRight$, dropBlock$, resetButton$);
   // Accumulate actions in state
   const state$: Observable<State> = action$.pipe(scan(reduceState, initialState));
   // Render state using subscription
   const subscription: Subscription = state$.subscribe(updateView(() => subscription.unsubscribe()));
-
 }
 
 // Execute main function on load

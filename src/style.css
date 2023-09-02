@@ -98,3 +98,7 @@ svg rect {
   font-weight: bolder;
   text-align: center;
 }
+
+.restart {
+  background-color: aquamarine;
+}

@@ -2,9 +2,9 @@
 import { GameConstants } from "./constants";
 import { State, Action, Block, TetrisPiece, BlockMatrix } from "./types"
 import { generatePiece, generateRandomPiece, shiftPieceDown, shiftPieceLeft, shiftPieceRight } from "./utils/bodyUtils";
-import { getBottomMost, overlay, overlayConflict, pieceToMatrix, hasBlock, rotate, getLeftMost, getRightMost, isFullRow } from "./utils/matrixUtils";
+import { getBottomMost, overlay, overlayConflict, pieceToMatrix, hasBlock, rotate, getLeftMost, getRightMost, isFullRow, initialize2DArray } from "./utils/matrixUtils";
 import { RNG } from "./utils/randomUtils";
-export { ShiftBlockLeft, ShiftBlockRight, RotateBlock, reduceState, Tick }
+export { ShiftBlockLeft, ShiftBlockRight, RotateBlock, Restart, reduceState, Tick }
 
 const
     /**
@@ -25,8 +25,12 @@ class ShiftBlockLeft implements Action {
      * @returns rotated state
      */
     apply = (s: State): State => {
+
+        if (s.gameEnd) {
+            return s
+        }
+
         const pieceLeft: TetrisPiece = shiftPieceLeft(s.currentTetrisPiece);
-        console.log()
         return ! ( overlayConflict(s.stationaryBlocks)(pieceToMatrix(pieceLeft)) || pieceLeft.x + getLeftMost(pieceLeft.matrix) < 0 ) ? 
          ({
             ...s,
@@ -47,6 +51,11 @@ class ShiftBlockRight implements Action {
      * @returns rotated state
      */
     apply = (s: State): State => {
+
+        if (s.gameEnd) {
+            return s
+        }
+
         const pieceRight: TetrisPiece = shiftPieceRight(s.currentTetrisPiece);
 
         return ! ( overlayConflict(s.stationaryBlocks)(pieceToMatrix(pieceRight)) || pieceRight.x + getRightMost(pieceRight.matrix) > GameConstants.GRID_WIDTH-1 ) ? ({
@@ -68,7 +77,11 @@ class RotateBlock implements Action {
      * @returns rotated state
      */
     apply = (s: State) => {
-    
+        
+        if (s.gameEnd) {
+            return s
+        }
+
         const rotatedPiece: TetrisPiece = {
             ...s.currentTetrisPiece,
             matrix: rotate(s.currentTetrisPiece.matrix)
@@ -92,6 +105,11 @@ class Tick implements Action {
 
 
     apply(s: State): State {
+
+        if (s.gameEnd) {
+            return s
+        }
+
         const newState: State = {
             ...s,
             upComingTetrisPiece: Tick.tetrisPieceBlocked(s)? generateRandomPiece(s.seed): s.upComingTetrisPiece,
@@ -125,4 +143,23 @@ class Tick implements Action {
         return s.stationaryBlocks[0].reduce((acc, curr) => acc || curr ? true : false, false) //TODO change all accumulating functions to use reduce instead of filter
     }
 
+}
+
+class Restart implements Action {
+    constructor() { }
+    /**
+     * Shifts block to the left
+     * @param s previous state
+     * @returns rotated state
+     */
+    apply = (s: State): State => {
+        return {
+            ...s,
+            currentTetrisPiece: generateRandomPiece(s.seed),
+            upComingTetrisPiece: generateRandomPiece(s.seed+1),
+            stationaryBlocks: initialize2DArray(GameConstants.GRID_HEIGHT, GameConstants.GRID_WIDTH),
+            level: 1,
+            gameEnd: false
+        }
+    }
 }
