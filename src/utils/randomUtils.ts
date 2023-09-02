@@ -31,3 +31,10 @@ abstract class RNG {
 function isNotNullOrUndefined<T extends object>(input: null | undefined | T): input is T {
     return input != null;
 }
+
+function numberToString(input: number | null | undefined): string {
+    if (input === null || input === undefined) {
+      return "0";
+    }
+    return input.toString();
+  }

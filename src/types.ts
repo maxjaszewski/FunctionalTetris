@@ -1,7 +1,7 @@
 // This file defines Typescript types and interfaces
 
 
-export type { Key, Event, ViewType, State, Action, Block, TetrisPiece, SortedBlocks }
+export type { Key, Event, ViewType, State, Action, Block, TetrisPiece, BlockMatrix }
 
 
 /**
@@ -24,34 +24,30 @@ type Event = 'keydown' | 'keyup' | "keypress";
  */
 type ViewType = undefined; // TODO
 
-type Block = Readonly<{
-    id: string,
-    x: number,
-    y: number,
-    style: BlockStyle
-}>
+type Block = "red" | "green" | null;
+
+type BlockMatrix = ReadonlyArray<ReadonlyArray<Block>>;
 
 /**
  * Tetris pieces
  */
 type TetrisPiece  = Readonly<{
-    id: number,
-    blocks: ReadonlyArray<Block>
-}>
+    x: number,
+    y: number,
+    matrix: BlockMatrix
+}>;
 
 /**
  * Game state
  */
 type State = Readonly<{
-    upComingTetrisPiece: Readonly<TetrisPiece>, // Tetris piece may not exist at start or end of game
-    currentTetrisPiece: Readonly<TetrisPiece>, // Tetris piece may not exist at start or end of game
-    stationaryBlocks: ReadonlyArray<Block>,
+    upComingTetrisPiece: TetrisPiece, // Tetris piece may not exist at start or end of game
+    currentTetrisPiece: TetrisPiece, // Tetris piece may not exist at start or end of game
+    stationaryBlocks: BlockMatrix,
     level: number,
     score: number,
     highscore: number,
     gameEnd: boolean,
-    blockCount: number,
-    removeBlocks: ReadonlyArray<Block> 
 }>
 
 /**
@@ -60,8 +56,3 @@ type State = Readonly<{
 interface Action {
     apply(s: State): State;
 }
-
-type SortedBlocks = Readonly<{
-    [key: number]: ReadonlyArray<Block>
-
-}>

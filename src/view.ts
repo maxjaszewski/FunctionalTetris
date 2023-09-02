@@ -2,10 +2,11 @@
 
 export { updateView }
 
-import { State, Block } from "./types"
+import { State, Block, BlockMatrix } from "./types"
 import { Viewport, BlockConstants } from "./constants";
 import { show, hide, createSvgElement } from "./utils/htmlUtils";
 import { isNotNullOrUndefined } from "./utils/jsUtils";
+import { pieceToMatrix } from "./utils/matrixUtils";
 
 
 /**
@@ -14,30 +15,39 @@ import { isNotNullOrUndefined } from "./utils/jsUtils";
  * @param block Update view for this block
  */
 
-const updateBlockView = (rootSVG: HTMLElement) => (block: Block): void => {
-    function appendNewRect() {
-        const v = createSvgElement(rootSVG.namespaceURI, "rect");
-        rootSVG.appendChild(v)
-        return v;
+const clearSVGBoard = (rootSVG: HTMLElement): void => {
+    while(rootSVG.firstChild) {
+        rootSVG.removeChild(rootSVG.firstChild);
     }
-    const b = document.getElementById(block.id) || appendNewRect();
-    b.setAttribute("id", `${block.id}`);
-    b.setAttribute("height", `${BlockConstants.HEIGHT}`);
-    b.setAttribute("width", `${BlockConstants.WIDTH}`);
-    b.setAttribute("x", `${BlockConstants.WIDTH * block.x}`);
-    b.setAttribute("y", `${BlockConstants.HEIGHT * block.y}`);
-    b.setAttribute("style", `${block.style}`);
 }
 
+
+const paintMatrix = (rootSVG: HTMLElement) => (matrix: BlockMatrix): void => {
+    matrix.forEach((row, rowNumber) => row.forEach((block, columnNumber) => createBlockView(rootSVG)(block)(rowNumber)(columnNumber)));
+}
 /**
  * Updates the view of a Block
  * 
  * @param block Update view for this block
  */
 
-const removeBlockView = (rootSVG: HTMLElement) => (block: Block): void => {
-    const blockElement = document.getElementById(block.id);
-    isNotNullOrUndefined(blockElement) ? rootSVG.removeChild(blockElement) : undefined;
+const createBlockView = (rootSVG: HTMLElement) => (block: Block) => (row: number) => (column: number): void => {
+    if ( block != null ) {
+        function appendNewRect() {
+            const v = createSvgElement(rootSVG.namespaceURI, "rect");
+            rootSVG.appendChild(v)
+            return v;
+        }
+        const b = appendNewRect();
+        b.setAttribute("height", `${BlockConstants.HEIGHT}`);
+        b.setAttribute("width", `${BlockConstants.WIDTH}`);
+        b.setAttribute("x", `${BlockConstants.WIDTH * column}`);
+        b.setAttribute("y", `${BlockConstants.HEIGHT * row}`);
+        console.log(block)
+        b.setAttribute("style", `blue`);
+        console.log(b)
+    }
+    
 }
 
 /**
@@ -69,25 +79,17 @@ function updateView(onFinish: () => void) {
         const levelText = document.querySelector("#levelText") as HTMLElement;
         const scoreText = document.querySelector("#scoreText") as HTMLElement;
         const highScoreText = document.querySelector("#highScoreText") as HTMLElement;
-        
         levelText.textContent = s.level.toString();
         scoreText.textContent = s.score.toString();
         highScoreText.textContent = s.highscore.toString();
 
-        
-        /**
-         * Renders the current state to the canvas.
-         *
-         * In MVC terms, this updates the View using the Model.
-         *
-         * @param s Current state
-         */
-        // Add stationary blocks to the main grid canvas
-        s.stationaryBlocks.forEach(updateBlockView(svg));
-        // Add or move current tetris piece blocks
-        s.currentTetrisPiece.blocks.forEach(updateBlockView(svg));
-        // Remove blocks scheduled for removal
-        s.removeBlocks.forEach(block => removeBlockView(svg)(block));
+
+        // Clear Board
+        clearSVGBoard(svg);
+        // Paint stationary blocks
+        const svgPaint = paintMatrix(svg);
+        svgPaint(s.stationaryBlocks);
+        svgPaint(pieceToMatrix(s.currentTetrisPiece));
 
         // Add a block to the preview canvas
         const cubePreview = createSvgElement(preview.namespaceURI, "rect", {
