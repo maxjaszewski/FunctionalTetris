@@ -22,28 +22,18 @@ import { updateView } from "./view";
 import { fromEvent, interval, merge, Subscription, Observable } from "rxjs";
 import { map, filter, scan } from "rxjs/operators";
 import { initialize2DArray } from "./utils/matrixUtils";
-
-const initialTetrisPiece: TetrisPiece = {
-  x: 0,
-  y: 0,
-  matrix: [
-    [null, "red", "red", null],
-    [null, "red", "red", null],
-    [null, null, null, null],
-    [null, null, null, null]
-  ]
-}
+import { generateRandomPiece } from "./utils/bodyUtils";
 
 // Define initial state of game
 const initialState: State = {
-  upComingTetrisPiece: initialTetrisPiece,
-  currentTetrisPiece: OPiece,
+  upComingTetrisPiece: generateRandomPiece(1),
+  currentTetrisPiece: generateRandomPiece(2),
   stationaryBlocks: initialize2DArray(GameConstants.GRID_HEIGHT, GameConstants.GRID_WIDTH),
   level: 1,
   score: 0,
   highscore: 0,
   gameEnd: false,
-  seed: 1
+  seed: 3
 } as const;
 
 /**
