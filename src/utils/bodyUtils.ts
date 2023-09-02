@@ -1,74 +1,100 @@
-import { Block, State, TetrisPiece } from "../types";
+import { Block, BlockMatrix, State, TetrisPiece } from "../types";
+import { RNG } from "./randomUtils";
 
-export { shiftPieceDown, shiftPieceLeft, shiftPieceRight, generateNewRandomPiece }
+export { shiftPieceDown, shiftPieceLeft, shiftPieceRight, generatePiece, generateRandomPiece }
 
 const shiftPieceDown = (tetrisPiece: TetrisPiece): TetrisPiece => {
     return {
         ...tetrisPiece,
-        blocks: tetrisPiece.blocks.map(block => (
-            {
-                ...block,
-                y: block.y + 1
-            }
-        )
-        )
+        y: tetrisPiece.y + 1
     };
 }
 
 const shiftPieceLeft = (tetrisPiece: TetrisPiece): TetrisPiece => {
     return {
         ...tetrisPiece,
-        blocks: tetrisPiece.blocks.map(block => (
-            {
-                ...block,
-                x: block.x - 1
-            }
-        )
-        )
+        x: tetrisPiece.x - 1
     };
 }
 
 const shiftPieceRight = (tetrisPiece: TetrisPiece): TetrisPiece => {
     return {
         ...tetrisPiece,
-        blocks: tetrisPiece.blocks.map(block => (
-            {
-                ...block,
-                x: block.x + 1
-            }
-        )
-        )
+        x: tetrisPiece.x + 1
     };
 }
 
-const generateNewRandomPiece = (s: State): TetrisPiece => {
+const generateRandomPiece = (seed: number) => {
+    const scaleRGB = RNG.discrete(0)(255);
+    const scalePiece = RNG.discrete(1)(8);
+    const pieceID: number = scalePiece(RNG.hash(seed));
+    const rgb1: number = RNG.hash(seed + 1);
+    const rgb2: number = RNG.hash(seed + 2);
+    const rgb3: number = RNG.hash(seed + 3);
+    return generatePiece(pieceID)(`rgb(${scaleRGB(rgb1)}, ${scaleRGB(rgb2)}, ${scaleRGB(rgb3)})`);
+}
+
+const generatePiece = (piece: number) => (colour: Block): TetrisPiece => {
     return {
-        id: 1,
-        blocks: [
-            {
-            id: (s.blockCount+1).toString(),
-            x: 0,
-            y: 0,
-            style: "fill: red"
-            },
-            {
-            id: (s.blockCount+2).toString(),
-            x: 1,
-            y: 0,
-            style: "fill: red"
-            },
-            {
-            id: (s.blockCount+3).toString(),
-            x: 0,
-            y: 1,
-            style: "fill: red"
-            },
-            {
-            id: (s.blockCount+4).toString(),
-            x: 1,
-            y: 1,
-            style: "fill: red"
-            }
-        ]
-      };
+        x: 3,
+        y: -2,
+        matrix: generatePieceMatrix(piece)(colour)
+
+    }
+}
+
+const generatePieceMatrix = (piece: number) => (colour: Block): BlockMatrix => {
+    switch (piece) {
+        case 1: //O
+            return [
+                [null, null, null, null],
+                [null, colour, colour, null],
+                [null, colour, colour, null],
+                [null, null, null, null]
+            ];
+        case 2: //J
+            return [
+                [null, null, null, null],
+                [null, colour, null, null],
+                [null, colour, colour, colour],
+                [null, null, null, null]
+            ];
+        case 3: //L
+            return [
+                [null, null, null, null],
+                [null, null, null, colour],
+                [null, colour, colour, colour],
+                [null, null, null, null]
+            ];
+        case 4: //I
+            return [
+                [null, colour, null, null],
+                [null, colour, null, null],
+                [null, colour, null, null],
+                [null, colour, null, null]
+            ];
+        case 5: //S
+            return [
+                [null, null, null, null],
+                [null, null, colour, colour],
+                [null, colour, colour, null],
+                [null, null, null, null]
+            ];
+        case 6: //Z
+            return [
+                [null, null, null, null],
+                [null, colour, colour, null],
+                [null, null, colour, colour],
+                [null, null, null, null]
+            ];
+        default: //T
+            return [
+                [null, null, null, null],
+                [null, null, colour, null],
+                [null, colour, colour, colour],
+                [null, null, null, null],
+            ];
+
+
+    }
 }

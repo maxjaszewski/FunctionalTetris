@@ -1,8 +1,10 @@
 // Functions and objects that mutate State (CHANGE MODEL)
 import { GameConstants } from "./constants";
-import { State, Action, Block, SortedBlocks } from "./types"
-import { generateNewRandomPiece, shiftPieceDown, shiftPieceLeft, shiftPieceRight } from "./utils/bodyUtils";
-export { ShiftBlockLeft, ShiftBlockRight, RotateBlock, reduceState, Tick }
+import { State, Action, TetrisPiece, BlockMatrix } from "./types"
+import { generateRandomPiece, shiftPieceDown, shiftPieceLeft, shiftPieceRight } from "./utils/bodyUtils";
+import { getBottomMost, overlay, overlayConflict, pieceToMatrix, hasBlock, rotate, getLeftMost, getRightMost, isFullRow, initialize2DArray } from "./utils/matrixUtils";
+import { RNG } from "./utils/randomUtils";
+export { ShiftBlockLeft, ShiftBlockRight, RotateBlock, Restart, reduceState, Tick }
 
 const
     /**
@@ -23,18 +25,21 @@ class ShiftBlockLeft implements Action {
      * @returns rotated state
      */
     apply = (s: State): State => {
-        return ShiftBlockLeft.canMoveLeft(s) ? 
-         ({
-            ...s,
-            currentTetrisPiece: shiftPieceLeft(s.currentTetrisPiece)
-        }) : s;
+
+        if (s.gameEnd) {
+            return s
+        }
+
+        const pieceLeft: TetrisPiece = shiftPieceLeft(s.currentTetrisPiece);
+        return !(overlayConflict(s.stationaryBlocks)(pieceToMatrix(pieceLeft)) || pieceLeft.x + getLeftMost(pieceLeft.matrix) < 0) ?
+            ({
+                ...s,
+                currentTetrisPiece: pieceLeft
+            }) : s;
     }
 
     static canMoveLeft = (s: State): boolean => {
-        const blockedByBoundary: boolean = s.currentTetrisPiece.blocks.filter((block) => block.x == 0).length > 0;
-        const allPieceAndStationaryBlocks = s.currentTetrisPiece.blocks.flatMap(b => s.stationaryBlocks.map<[Block, Block]>(r => ([b, r])));
-        const blockedbyStationaryBlock: boolean = allPieceAndStationaryBlocks.filter(blockPair => blockPair[0].x == blockPair[1].x+1 && blockPair[0].y == blockPair[1].y).length > 0;
-        return !blockedByBoundary && !blockedbyStationaryBlock;
+        return true
     }
 }
 
@@ -46,17 +51,21 @@ class ShiftBlockRight implements Action {
      * @returns rotated state
      */
     apply = (s: State): State => {
-        return ShiftBlockRight.canMoveRight(s) ? ({
-        ...s,
-        currentTetrisPiece: shiftPieceRight(s.currentTetrisPiece)
+
+        if (s.gameEnd) {
+            return s
+        }
+
+        const pieceRight: TetrisPiece = shiftPieceRight(s.currentTetrisPiece);
+
+        return !(overlayConflict(s.stationaryBlocks)(pieceToMatrix(pieceRight)) || pieceRight.x + getRightMost(pieceRight.matrix) > GameConstants.GRID_WIDTH - 1) ? ({
+            ...s,
+            currentTetrisPiece: shiftPieceRight(s.currentTetrisPiece)
         }) : s;
     }
 
     static canMoveRight = (s: State): boolean => {
-        const blockedByBoundary: boolean = s.currentTetrisPiece.blocks.filter((block) => block.x == GameConstants.GRID_WIDTH-1).length > 0;
-        const allPieceAndStationaryBlocks = s.currentTetrisPiece.blocks.flatMap(b => s.stationaryBlocks.map<[Block, Block]>(r => ([b, r])));
-        const blockedbyStationaryBlock: boolean = allPieceAndStationaryBlocks.filter(blockPair => blockPair[0].x == blockPair[1].x-1 && blockPair[0].y == blockPair[1].y).length > 0;
-        return !blockedByBoundary && !blockedbyStationaryBlock;
+        return true;
     }
 }
 
@@ -67,9 +76,23 @@ class RotateBlock implements Action {
      * @param s previous state
      * @returns rotated state
      */
-    apply = (s: State) => ({
-        ...s
-    })
+    apply = (s: State) => {
+
+        if (s.gameEnd) {
+            return s
+        }
+
+        const rotatedPiece: TetrisPiece = {
+            ...s.currentTetrisPiece,
+            matrix: rotate(s.currentTetrisPiece.matrix)
+        }
+
+        return {
+            ...s,
+            currentTetrisPiece: rotatedPiece
+        }
+
+    }
 }
 
 class Tick implements Action {
@@ -83,62 +106,60 @@ class Tick implements Action {
 
     apply(s: State): State {
 
-        // If Piece is halted, add blocks to stationary blocks and generate a new block
-        const newStateHalted: State = Tick.tetrisPieceAtBottom(s) || Tick.tetrisPieceBlocked(s) ? Tick.moveTetrisPieceToStationaryAndGenerateNewPiece(s): {
+        if (s.gameEnd) {
+            return s
+        }
+
+        const newState: State = {
             ...s,
-            currentTetrisPiece: shiftPieceDown(s.currentTetrisPiece)
-        };
+            upComingTetrisPiece: Tick.tetrisPieceBlocked(s) ? generateRandomPiece(s.seed) : s.upComingTetrisPiece,
+            currentTetrisPiece: Tick.tetrisPieceBlocked(s) ? s.upComingTetrisPiece : shiftPieceDown(s.currentTetrisPiece),
+            stationaryBlocks: Tick.tetrisPieceBlocked(s) ? overlay(s.stationaryBlocks)(pieceToMatrix(s.currentTetrisPiece)) : s.stationaryBlocks,
+            seed: RNG.hash(s.seed)
+        }
 
-        // If row is full, remove all blocks in the row and increment score
-        const newStateClearRows = Tick.checkFullRows(newStateHalted);
+        const numFullRows: number = newState.stationaryBlocks.filter(row => isFullRow(row)).length;
+        const newTopRows: BlockMatrix = Array.from({ length: numFullRows }, () => Array.from({ length: GameConstants.GRID_WIDTH }, () => null))
+        const removeFullRows: State = {
+            ...newState,
+            score: newState.score + numFullRows,
+            highscore: Math.max(newState.highscore, newState.score + numFullRows),
+            stationaryBlocks: numFullRows > 0 ? [...newTopRows, ...newState.stationaryBlocks.filter(row => !(isFullRow(row)))] : newState.stationaryBlocks
+        }
 
-        // Game over if block height for any column in new state is greater than grid height
+        const gameOverState: State = {
+            ...removeFullRows,
+            gameEnd: hasBlock(removeFullRows.stationaryBlocks[0])
+        }
 
-        return Tick.isGameOver(newStateClearRows) ? {...newStateClearRows, gameEnd: true} : newStateClearRows;
-    }
-
-    static tetrisPieceAtBottom = (s: State): boolean => {
-        return s.currentTetrisPiece.blocks.filter(block => block.y == GameConstants.GRID_HEIGHT - 1).length > 0
+        return gameOverState;
     }
 
     static tetrisPieceBlocked = (s: State): boolean => {
-        const allPieceAndStationaryBlocks = s.currentTetrisPiece.blocks.flatMap(b => s.stationaryBlocks.map<[Block, Block]>(r => ([b, r])));
-        const touchingBlocks = allPieceAndStationaryBlocks.filter(blockPair => blockPair[1].x == blockPair[0].x && blockPair[1].y - blockPair[0].y == 1);
-        return touchingBlocks.length > 0;
+        return (s.currentTetrisPiece.y + getBottomMost(s.currentTetrisPiece.matrix) == GameConstants.GRID_HEIGHT - 1) || (overlayConflict(s.stationaryBlocks)(pieceToMatrix(shiftPieceDown(s.currentTetrisPiece))));
     }
 
-    static moveTetrisPieceToStationaryAndGenerateNewPiece(s: State): State {
+    static isGameOver(s: State): boolean {
+        return s.stationaryBlocks[0].reduce((acc, curr) => acc || curr ? true : false, false) //TODO change all accumulating functions to use reduce instead of filter
+    }
+
+}
+
+class Restart implements Action {
+    constructor() { }
+    /**
+     * Shifts block to the left
+     * @param s previous state
+     * @returns rotated state
+     */
+    apply = (s: State): State => {
         return {
             ...s,
-            stationaryBlocks: [...s.stationaryBlocks, ...s.currentTetrisPiece.blocks],
-            currentTetrisPiece: generateNewRandomPiece(s),
-            blockCount: s.blockCount+4
+            currentTetrisPiece: generateRandomPiece(s.seed),
+            upComingTetrisPiece: generateRandomPiece(s.seed + 1),
+            stationaryBlocks: initialize2DArray(GameConstants.GRID_HEIGHT, GameConstants.GRID_WIDTH),
+            level: 1,
+            gameEnd: false
         }
     }
-
-    static isGameOver(s: State): boolean { 
-        return s.stationaryBlocks.reduce((acc, curr) => curr.y == 0 || acc, false); //TODO change all accumulating functions to use reduce instead of filter
-    }
-
-    static checkFullRows(s: State): State {
-        const blocksSortedIntoRows = Object.values(s.stationaryBlocks.reduce((acc, curr) => {
-            const index: number = curr.y;
-            let newAcc = {...acc};
-            !newAcc[index] ? newAcc[index] = [] : newAcc;
-            newAcc[index] = [...newAcc[index], curr];
-            return newAcc as SortedBlocks;
-          }, {} as SortedBlocks));
-        const unfilledRows = blocksSortedIntoRows.filter(row => row.length < GameConstants.GRID_WIDTH);
-        const filledRows = blocksSortedIntoRows.filter(row => row.length == GameConstants.GRID_WIDTH);
-        const newScore = filledRows.length > 0 ? s.score + 1: s.score;
-        return {
-            ...s,
-            score: newScore, //TODO check tetris score method
-            highscore: newScore > s.highscore ? newScore : s.highscore,
-            stationaryBlocks: unfilledRows.flat(),
-            removeBlocks: filledRows.flat()
-        } as State
-
-    }   
-
 }

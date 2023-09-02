@@ -14,55 +14,26 @@
 
 import "./style.css";
 
-import { GameConstants, Viewport, BlockConstants } from "./constants";
-import { State, Key, Event, Action, Block, TetrisPiece } from "./types";
-import { ShiftBlockLeft, ShiftBlockRight, RotateBlock, Tick, reduceState } from "./state"
+import { GameConstants } from "./constants";
+import { State, Key, Action } from "./types";
+import { ShiftBlockLeft, ShiftBlockRight, RotateBlock, Tick, reduceState, Restart } from "./state"
 import { updateView } from "./view";
 
 import { fromEvent, interval, merge, Subscription, Observable } from "rxjs";
 import { map, filter, scan } from "rxjs/operators";
-
-const tetrisPiece = {
-  id: 1,
-  blocks: [
-    {
-      id: "1",
-      x: 0,
-      y: 0,
-      style: "fill: red"
-    },
-    {
-      id: "2",
-      x: 1,
-      y: 0,
-      style: "fill: red"
-    },
-    {
-      id: "3",
-      x: 0,
-      y: 1,
-      style: "fill: red"
-    },
-    {
-      id: "4",
-      x: 1,
-      y: 1,
-      style: "fill: red"
-    }
-  ]
-} as TetrisPiece;
+import { initialize2DArray } from "./utils/matrixUtils";
+import { generateRandomPiece } from "./utils/bodyUtils";
 
 // Define initial state of game
 const initialState: State = {
-  upComingTetrisPiece: tetrisPiece,
-  currentTetrisPiece: tetrisPiece,
-  stationaryBlocks: [],
+  upComingTetrisPiece: generateRandomPiece(1),
+  currentTetrisPiece: generateRandomPiece(2),
+  stationaryBlocks: initialize2DArray(GameConstants.GRID_HEIGHT, GameConstants.GRID_WIDTH),
   level: 1,
   score: 0,
   highscore: 0,
   gameEnd: false,
-  blockCount: 4, // TODO
-  removeBlocks: []
+  seed: 3
 } as const;
 
 /**
@@ -75,7 +46,10 @@ export function main() {
 
   // Function to filter keypress stream by key
   const fromKey = (keyCode: Key) =>
-    key$.pipe(filter(({ code }) => code === keyCode));
+    key$.pipe(
+      filter(({ code }) => code === keyCode),
+      filter(({ repeat }) => !repeat)
+    );
 
   // Keypress stream per key, output actions
   const shiftBlockLeft$ = fromKey("KeyA").pipe(map(_ => new ShiftBlockLeft()));
@@ -83,13 +57,16 @@ export function main() {
   const dropBlock$ = fromKey("KeyS").pipe(map(_ => new RotateBlock()));
   const tick$ = interval(GameConstants.TICK_RATE_MS).pipe(map(elapsed => new Tick(elapsed)));
 
+  const resetButton = document.getElementById('restart-button') as HTMLElement;
+  const resetButton$ = fromEvent(resetButton, 'click').pipe(map(_ => new Restart()));
+
+
   // Merge observables to action stream
-  const action$: Observable<Action> = merge(tick$, shiftBlockLeft$, shiftBlockRight$, dropBlock$);
+  const action$: Observable<Action> = merge(tick$, shiftBlockLeft$, shiftBlockRight$, dropBlock$, resetButton$);
   // Accumulate actions in state
   const state$: Observable<State> = action$.pipe(scan(reduceState, initialState));
   // Render state using subscription
   const subscription: Subscription = state$.subscribe(updateView(() => subscription.unsubscribe()));
-
 }
 
 // Execute main function on load

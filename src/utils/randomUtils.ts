@@ -1,4 +1,4 @@
-export { RNG, isNotNullOrUndefined }
+export { RNG }
 
 /**
  * A random number generator which provides two pure functions
@@ -22,12 +22,8 @@ abstract class RNG {
  h    * Takes hash value and scales it to the range [-1, 1]
      */
     public static scale = (hash: number) => (2 * hash) / (RNG.m - 1) - 1;
+
+    public static discrete = (low: number) => (high: number) => (hash: number): number => Math.floor((((hash) / (RNG.m - 1)) * (high - low)) + low);
 }
 
-/**
- * Type guard for use in filters
- * @param input something that might be null or undefined
- */
-function isNotNullOrUndefined<T extends object>(input: null | undefined | T): input is T {
-    return input != null;
-}
+
