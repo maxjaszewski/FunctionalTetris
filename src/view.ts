@@ -16,7 +16,8 @@ import { pieceToMatrix } from "./utils/matrixUtils";
  */
 
 const clearSVGBoard = (rootSVG: HTMLElement): void => {
-    rootSVG.querySelectorAll("#block").forEach(block => rootSVG.removeChild(block));
+    Array.from(rootSVG.children).filter(element => element.classList.contains("block")).forEach(block => rootSVG.removeChild(block));   
+
 }
 
 
@@ -37,12 +38,12 @@ const createBlockView = (rootSVG: HTMLElement) => (block: Block) => (row: number
             return v;
         }
         const b = appendNewRect();
-        b.setAttribute("id", "block")
         b.setAttribute("height", `${BlockConstants.HEIGHT}`);
         b.setAttribute("width", `${BlockConstants.WIDTH}`);
         b.setAttribute("x", `${BlockConstants.WIDTH * column}`);
         b.setAttribute("y", `${BlockConstants.HEIGHT * row}`);
         b.setAttribute("style", `fill: ${block}`);
+        b.setAttribute("class", "block");
     }
     
 }
@@ -101,7 +102,6 @@ function updateView(onFinish: () => void) {
 
         if (s.gameEnd) {
             show(gameover);
-            console.log("GAME HAS ENDED")
             onFinish();
         } else {
             hide(gameover);
