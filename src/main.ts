@@ -14,8 +14,8 @@
 
 import "./style.css";
 
-import { GameConstants, Viewport, BlockConstants, OPiece } from "./constants";
-import { State, Key, Event, Action, Block, TetrisPiece } from "./types";
+import { GameConstants } from "./constants";
+import { State, Key, Action } from "./types";
 import { ShiftBlockLeft, ShiftBlockRight, RotateBlock, Tick, reduceState, Restart } from "./state"
 import { updateView } from "./view";
 

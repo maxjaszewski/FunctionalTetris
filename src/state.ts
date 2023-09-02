@@ -1,7 +1,7 @@
 // Functions and objects that mutate State (CHANGE MODEL)
 import { GameConstants } from "./constants";
-import { State, Action, Block, TetrisPiece, BlockMatrix } from "./types"
-import { generatePiece, generateRandomPiece, shiftPieceDown, shiftPieceLeft, shiftPieceRight } from "./utils/bodyUtils";
+import { State, Action, TetrisPiece, BlockMatrix } from "./types"
+import { generateRandomPiece, shiftPieceDown, shiftPieceLeft, shiftPieceRight } from "./utils/bodyUtils";
 import { getBottomMost, overlay, overlayConflict, pieceToMatrix, hasBlock, rotate, getLeftMost, getRightMost, isFullRow, initialize2DArray } from "./utils/matrixUtils";
 import { RNG } from "./utils/randomUtils";
 export { ShiftBlockLeft, ShiftBlockRight, RotateBlock, Restart, reduceState, Tick }

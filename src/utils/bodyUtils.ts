@@ -1,4 +1,3 @@
-import { JPiece } from "../constants";
 import { Block, BlockMatrix, State, TetrisPiece } from "../types";
 import { RNG } from "./randomUtils";
 

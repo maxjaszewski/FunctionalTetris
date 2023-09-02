@@ -1,5 +1,3 @@
-import { TetrisPiece } from "../types";
-
 // Utility functions and definitions that are NOT specific to the tetris game
 export { flatMap, not, elem, except, isNotNullOrUndefined }
 

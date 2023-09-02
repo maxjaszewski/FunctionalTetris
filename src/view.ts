@@ -5,7 +5,6 @@ export { updateView }
 import { State, Block, BlockMatrix } from "./types"
 import { Viewport, BlockConstants } from "./constants";
 import { show, hide, createSvgElement } from "./utils/htmlUtils";
-import { isNotNullOrUndefined } from "./utils/jsUtils";
 import { pieceToMatrix } from "./utils/matrixUtils";
 
 
