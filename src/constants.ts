@@ -29,7 +29,7 @@ const
             [null, "red", "red", null],
             [null, null, null, null],
             [null, null, null, null]
-        ]
+    ]
     } as const,
 
     JPiece = {

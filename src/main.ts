@@ -43,6 +43,7 @@ const initialState: State = {
   score: 0,
   highscore: 0,
   gameEnd: false,
+  seed: 1
 } as const;
 
 /**

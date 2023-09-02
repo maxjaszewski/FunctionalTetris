@@ -24,7 +24,7 @@ type Event = 'keydown' | 'keyup' | "keypress";
  */
 type ViewType = undefined; // TODO
 
-type Block = "red" | "green" | null;
+type Block = string | null;
 
 type BlockMatrix = ReadonlyArray<ReadonlyArray<Block>>;
 
@@ -48,6 +48,7 @@ type State = Readonly<{
     score: number,
     highscore: number,
     gameEnd: boolean,
+    seed: number
 }>
 
 /**
