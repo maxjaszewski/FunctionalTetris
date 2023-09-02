@@ -32,6 +32,10 @@ function hasBlock(matrixRow: ReadonlyArray<Block>): boolean {
     return matrixRow.reduce((accum, curr) =>  (accum || (curr != null)), false);
 }
 
+function isFullRow(matrixRow: ReadonlyArray<Block>): boolean {
+    return matrixRow.reduce((accum, curr) => (accum && (curr != null)), true)
+}
+
 const overlayConflict: (a: BlockMatrix) => (b: BlockMatrix) => boolean = matrixA => matrixB => {
     return matrixA.reduce((accum, currRow, rowNum) => accum || currRow.reduce((accum,_,colNum) => accum || ( (matrixA[rowNum][colNum] && matrixB[rowNum][colNum]) != null ), false), false)    
 }   
