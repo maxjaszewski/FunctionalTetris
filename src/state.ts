@@ -16,48 +16,59 @@ const
     reduceState = (s: State, action: Action) => action.apply(s);
 
 
-// Action types that trigger game state transitions
+/**
+ * Shift Piece Left
+ * @class
+ */
 class ShiftBlockLeft implements Action {
     constructor() { }
     /**
-     * Shifts block to the left
+     * 1. Checks if action possible
+     * 2. Shifts tetris piece left
      * @param s previous state
-     * @returns rotated state
+     * @returns shifted state
      */
     apply = (s: State): State => {
 
+        // Skip if game has ended
         if (s.gameEnd) {
             return s
         }
 
+        // Shift Piece Left
         const pieceLeft: TetrisPiece = shiftPieceLeft(s.currentTetrisPiece);
+
+        // Check if overlay conflict or out of bounds
         return !(overlayConflict(s.stationaryBlocks)(pieceToMatrix(pieceLeft)) || pieceLeft.x + getLeftMost(pieceLeft.matrix) < 0) ?
             ({
                 ...s,
                 currentTetrisPiece: pieceLeft
             }) : s;
     }
-
-    static canMoveLeft = (s: State): boolean => {
-        return true
-    }
 }
 
+/**
+ * Shift Piece Right
+ * @class
+ */
 class ShiftBlockRight implements Action {
     constructor() { }
     /**
      * Shifts block to the right
      * @param s previous state
-     * @returns rotated state
+     * @returns shifted state
      */
     apply = (s: State): State => {
 
+        //Skip if game has ended
         if (s.gameEnd) {
             return s
         }
 
+        // Shift piece right
         const pieceRight: TetrisPiece = shiftPieceRight(s.currentTetrisPiece);
 
+        // Check if overlay conflict or out of bounds
         return !(overlayConflict(s.stationaryBlocks)(pieceToMatrix(pieceRight)) || pieceRight.x + getRightMost(pieceRight.matrix) > GameConstants.GRID_WIDTH - 1) ? ({
             ...s,
             currentTetrisPiece: shiftPieceRight(s.currentTetrisPiece)
@@ -69,6 +80,10 @@ class ShiftBlockRight implements Action {
     }
 }
 
+/**
+ * Rotate Piece
+ * @class
+ */
 class RotateBlock implements Action {
     constructor() { }
     /**
@@ -78,19 +93,21 @@ class RotateBlock implements Action {
      */
     apply = (s: State) => {
 
+        // Skip if game has ended
         if (s.gameEnd) {
             return s
         }
 
+        // Rotate piece matrix
         const rotatedPiece: TetrisPiece = {
             ...s.currentTetrisPiece,
             matrix: rotate(s.currentTetrisPiece.matrix)
         }
 
-        return {
+        return !( (rotatedPiece.x + getRightMost(rotatedPiece.matrix) > GameConstants.GRID_WIDTH - 1) || (rotatedPiece.x + getLeftMost(rotatedPiece.matrix) < 0) ) ? ({
             ...s,
             currentTetrisPiece: rotatedPiece
-        }
+        }) : s;
 
     }
 }
