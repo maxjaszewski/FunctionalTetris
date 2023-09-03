@@ -5,6 +5,22 @@ import { Viewport, BlockConstants } from "./constants";
 import { createSvgElement, hide, show, pieceToMatrix } from "./utils";
 
 /**
+ *
+ * IMPORTANT!
+ * This code draws inspiration from
+ *
+ * Dwyer, T. (2023, September 3). Asteroids2023
+ * https://stackblitz.com/edit/asteroids2023
+ *
+ * Dwyer, T. (2023, August 28). Tim's Code Stuff. FRP Asteroids.
+ * https://tgdwyer.github.io/asteroids/
+ *
+ * Dwyer, T. (2023, August 28). Tim's Code Stuff. Functional Reactive Programming
+ * https://tgdwyer.github.io/asteroids/
+ *
+ */
+
+/**
  * Updates the view of a Block
  * @param block Update view for this block
  */

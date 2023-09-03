@@ -16,6 +16,22 @@ import { fromEvent, interval, merge, Subscription, Observable } from "rxjs";
 import { map, filter, scan } from "rxjs/operators";
 import { generateRandomPiece, initialize2DArray } from "./utils";
 
+/**
+ *
+ * IMPORTANT!
+ * This code draws inspiration from
+ *
+ * Dwyer, T. (2023, September 3). Asteroids2023
+ * https://stackblitz.com/edit/asteroids2023
+ *
+ * Dwyer, T. (2023, August 28). Tim's Code Stuff. FRP Asteroids.
+ * https://tgdwyer.github.io/asteroids/
+ *
+ * Dwyer, T. (2023, August 28). Tim's Code Stuff. Functional Reactive Programming
+ * https://tgdwyer.github.io/asteroids/
+ *
+ */
+
 // Define initial state of game
 const initialState: State = {
     upComingTetrisPiece: generateRandomPiece(1),
@@ -32,9 +48,6 @@ const initialState: State = {
     seed: 3,
 } as const;
 
-/**
- * Main game loop called on window load. See bottom of file.
- */
 export function main() {
     // General Keypress stream
     const key$ = fromEvent<KeyboardEvent>(document, "keypress");
