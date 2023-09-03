@@ -60,8 +60,9 @@ class ShiftBlockLeft implements Action {
 
         // Check if overlay conflict or out of bounds
         return !(
-            overlayConflict(s.stationaryBlocks)(pieceToMatrix(pieceLeft))(blockConflict) ||
-            pieceLeft.x + getLeftMost(pieceLeft.matrix)(hasBlock) < 0
+            overlayConflict(s.stationaryBlocks)(pieceToMatrix(pieceLeft))(
+                blockConflict
+            ) || pieceLeft.x + getLeftMost(pieceLeft.matrix)(hasBlock) < 0
         )
             ? {
                   ...s,
@@ -93,7 +94,9 @@ class ShiftBlockRight implements Action {
 
         // Check if overlay conflict or out of bounds
         return !(
-            overlayConflict(s.stationaryBlocks)(pieceToMatrix(pieceRight))(blockConflict) ||
+            overlayConflict(s.stationaryBlocks)(pieceToMatrix(pieceRight))(
+                blockConflict
+            ) ||
             pieceRight.x + getRightMost(pieceRight.matrix)(hasBlock) >
                 GameConstants.GRID_WIDTH - 1
         )
@@ -137,7 +140,9 @@ class RotateBlock implements Action {
             rotatedPiece.x + getRightMost(rotatedPiece.matrix)(hasBlock) >
                 GameConstants.GRID_WIDTH - 1 ||
             rotatedPiece.x + getLeftMost(rotatedPiece.matrix)(hasBlock) < 0 ||
-            overlayConflict(s.stationaryBlocks)(pieceToMatrix(rotatedPiece))(blockConflict)
+            overlayConflict(s.stationaryBlocks)(pieceToMatrix(rotatedPiece))(
+                blockConflict
+            )
         )
             ? {
                   ...s,
@@ -192,12 +197,13 @@ class Tick implements Action {
 
         // Count number of full rows
         const numFullRows: number = newState.stationaryBlocks.filter((row) =>
-            isFullRow(row)(block => (block != null))
+            isFullRow(row)((block) => block != null)
         ).length;
         // Generate blank full rows to top fill stationary blocks
-        const newTopRows: Matrix<Block> = Array.from(
-            { length: numFullRows },
-            () => Array.from({ length: GameConstants.GRID_WIDTH }, () => null)
+        const newTopRows: Matrix<Block> = initialize2DArray(
+            numFullRows,
+            GameConstants.GRID_WIDTH,
+            null
         );
         // If rows being removed, filter out and top fill with blank rows
         const removeFullRows: State = {
@@ -212,7 +218,7 @@ class Tick implements Action {
                     ? [
                           ...newTopRows,
                           ...newState.stationaryBlocks.filter(
-                              (row) => !isFullRow(row)(block => (block != null))
+                              (row) => !isFullRow(row)((block) => block != null)
                           ),
                       ]
                     : newState.stationaryBlocks,
