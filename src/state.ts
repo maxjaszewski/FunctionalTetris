@@ -35,7 +35,15 @@ const /**
      * @param action type of action to apply to the State
      * @returns a new State
      */
-    reduceState = (s: State, action: Action) => action.apply(s);
+    reduceState = (s: State, action: Action) => action.apply(s),
+
+    invalidAction = (s: State) => (newPiece: TetrisPiece): boolean => {
+        const leftOutside: boolean = newPiece.x + getLeftMost(newPiece.matrix)(hasBlock) < 0;
+        const rightOutside: boolean = newPiece.x + getRightMost(newPiece.matrix)(hasBlock) > GameConstants.GRID_WIDTH - 1;
+        const overlayConflictExists: boolean = overlayConflict(s.stationaryBlocks)(pieceToMatrix(newPiece))(blockConflict);
+        const belowGround: boolean = newPiece.y + getBottomMost(newPiece.matrix)(hasBlock) > GameConstants.GRID_HEIGHT - 1;
+        return leftOutside || rightOutside || overlayConflictExists || belowGround;
+    }
 
 /**
  * Shift Piece Left
@@ -58,12 +66,8 @@ class ShiftBlockLeft implements Action {
         // Shift Piece Left
         const pieceLeft: TetrisPiece = shiftPieceLeft(s.currentTetrisPiece);
 
-        // Check if overlay conflict or out of bounds
-        return !(
-            overlayConflict(s.stationaryBlocks)(pieceToMatrix(pieceLeft))(
-                blockConflict
-            ) || pieceLeft.x + getLeftMost(pieceLeft.matrix)(hasBlock) < 0
-        )
+        // Check if invalid action
+        return !(invalidAction(s)(pieceLeft))
             ? {
                   ...s,
                   currentTetrisPiece: pieceLeft,
@@ -93,13 +97,7 @@ class ShiftBlockRight implements Action {
         const pieceRight: TetrisPiece = shiftPieceRight(s.currentTetrisPiece);
 
         // Check if overlay conflict or out of bounds
-        return !(
-            overlayConflict(s.stationaryBlocks)(pieceToMatrix(pieceRight))(
-                blockConflict
-            ) ||
-            pieceRight.x + getRightMost(pieceRight.matrix)(hasBlock) >
-                GameConstants.GRID_WIDTH - 1
-        )
+        return !(invalidAction(s)(pieceRight))
             ? {
                   ...s,
                   currentTetrisPiece: shiftPieceRight(s.currentTetrisPiece),
@@ -136,14 +134,7 @@ class RotateBlock implements Action {
         };
 
         // Check if overlay conflict or out of bounds
-        return !(
-            rotatedPiece.x + getRightMost(rotatedPiece.matrix)(hasBlock) >
-                GameConstants.GRID_WIDTH - 1 ||
-            rotatedPiece.x + getLeftMost(rotatedPiece.matrix)(hasBlock) < 0 ||
-            overlayConflict(s.stationaryBlocks)(pieceToMatrix(rotatedPiece))(
-                blockConflict
-            )
-        )
+        return !(invalidAction(s)(rotatedPiece))
             ? {
                   ...s,
                   currentTetrisPiece: rotatedPiece,
