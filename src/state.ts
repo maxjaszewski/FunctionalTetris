@@ -17,6 +17,8 @@ import {
     getRightMost,
     isFullRow,
     initialize2DArray,
+    blockConflict,
+    blockCombine,
 } from "./utils";
 export {
     ShiftBlockLeft,
@@ -58,7 +60,7 @@ class ShiftBlockLeft implements Action {
 
         // Check if overlay conflict or out of bounds
         return !(
-            overlayConflict(s.stationaryBlocks)(pieceToMatrix(pieceLeft)) ||
+            overlayConflict(s.stationaryBlocks)(pieceToMatrix(pieceLeft))(blockConflict) ||
             pieceLeft.x + getLeftMost(pieceLeft.matrix) < 0
         )
             ? {
@@ -91,7 +93,7 @@ class ShiftBlockRight implements Action {
 
         // Check if overlay conflict or out of bounds
         return !(
-            overlayConflict(s.stationaryBlocks)(pieceToMatrix(pieceRight)) ||
+            overlayConflict(s.stationaryBlocks)(pieceToMatrix(pieceRight))(blockConflict) ||
             pieceRight.x + getRightMost(pieceRight.matrix) >
                 GameConstants.GRID_WIDTH - 1
         )
@@ -135,7 +137,7 @@ class RotateBlock implements Action {
             rotatedPiece.x + getRightMost(rotatedPiece.matrix) >
                 GameConstants.GRID_WIDTH - 1 ||
             rotatedPiece.x + getLeftMost(rotatedPiece.matrix) < 0 ||
-            overlayConflict(s.stationaryBlocks)(pieceToMatrix(rotatedPiece))
+            overlayConflict(s.stationaryBlocks)(pieceToMatrix(rotatedPiece))(blockConflict)
         )
             ? {
                   ...s,
@@ -183,7 +185,7 @@ class Tick implements Action {
             stationaryBlocks: Tick.tetrisPieceBlocked(s)
                 ? overlay(s.stationaryBlocks)(
                       pieceToMatrix(s.currentTetrisPiece)
-                  )
+                  )(blockCombine)
                 : s.stationaryBlocks,
             seed: RNG.hash(s.seed),
         };
@@ -238,7 +240,7 @@ class Tick implements Action {
                 GameConstants.GRID_HEIGHT - 1 ||
             overlayConflict(s.stationaryBlocks)(
                 pieceToMatrix(shiftPieceDown(s.currentTetrisPiece))
-            )
+            )(blockConflict)
         );
     };
 }

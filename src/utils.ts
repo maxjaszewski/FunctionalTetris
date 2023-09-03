@@ -28,6 +28,8 @@ export {
     transpose,
     rotate,
     isFullRow,
+    blockCombine,
+    blockConflict,
 };
 
 // **************************************************************************
@@ -179,6 +181,18 @@ const generatePieceMatrix =
         }
     };
 
+const blockCombine =
+    (a: Block) =>
+    (b: Block): Block => {
+        return a || b;
+    };
+
+const blockConflict =
+    (a: Block) =>
+    (b: Block): boolean => {
+        return (a && b) != null;
+    };
+
 // **************************************************************************
 // **************************************************************************
 // **************************************************************************
@@ -246,9 +260,7 @@ const createSvgElement = (
 // **************************************************************************
 
 function initialize2DArray(rows: number, cols: number): Matrix<Block> {
-    return Array.from({ length: rows }, () =>
-        Array.from({ length: cols })
-    );
+    return Array.from({ length: rows }, () => Array.from({ length: cols }));
 }
 
 function pieceToMatrix(tetrisPiece: TetrisPiece): Matrix<Block> {
@@ -280,28 +292,33 @@ function isFullRow(matrixRow: ReadonlyArray<Block>): boolean {
     }, true);
 }
 
-const overlayConflict: (a: Matrix<Block>) => (b: Matrix<Block>) => boolean =
-    (matrixA) => (matrixB) => {
+const overlayConflict =
+    <T>(matrixA: Matrix<T>) =>
+    (matrixB: Matrix<T>) =>
+    (conflict: (a: T) => (b: T) => boolean) => {
         return matrixA.reduce(
             (accum, currRow, rowNum) =>
                 accum ||
                 currRow.reduce(
                     (accum, _, colNum) =>
                         accum ||
-                        (matrixA[rowNum][colNum] && matrixB[rowNum][colNum]) !=
-                            null,
+                        conflict(matrixA[rowNum][colNum])(
+                            matrixB[rowNum][colNum]
+                        ),
                     false
                 ),
             false
         );
     };
 
-const overlay: (a: Matrix<Block>) => (b: Matrix<Block>) => Matrix<Block> =
-    (matrixA) => (matrixB) => {
+const overlay =
+    <T>(matrixA: Matrix<T>) =>
+    (matrixB: Matrix<T>) =>
+    (combine: (a: T) => (b: T) => T): Matrix<T> => {
         return matrixA.map((currRow, rowNum) =>
             currRow.map(
                 (_, colNum) =>
-                    matrixA[rowNum][colNum] || matrixB[rowNum][colNum]
+                    combine(matrixA[rowNum][colNum])(matrixB[rowNum][colNum])
             )
         );
     };
