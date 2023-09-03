@@ -14,8 +14,7 @@ import { updateView } from "./view";
 
 import { fromEvent, interval, merge, Subscription, Observable } from "rxjs";
 import { map, filter, scan } from "rxjs/operators";
-import { initialize2DArray } from "./utils/matrixUtils";
-import { generateRandomPiece } from "./utils/bodyUtils";
+import { generateRandomPiece, initialize2DArray } from "./utils";
 
 // Define initial state of game
 const initialState: State = {

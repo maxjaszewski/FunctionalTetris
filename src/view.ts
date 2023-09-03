@@ -2,8 +2,7 @@ export { updateView };
 
 import { State, Block, BlockMatrix } from "./types";
 import { Viewport, BlockConstants } from "./constants";
-import { show, hide, createSvgElement } from "./utils/htmlUtils";
-import { pieceToMatrix } from "./utils/matrixUtils";
+import { createSvgElement, hide, show, pieceToMatrix } from "./utils";
 
 /**
  * Updates the view of a Block

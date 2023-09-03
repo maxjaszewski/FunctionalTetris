@@ -2,12 +2,11 @@
 import { GameConstants } from "./constants";
 import { State, Action, TetrisPiece, BlockMatrix } from "./types";
 import {
+    RNG,
     generateRandomPiece,
     shiftPieceDown,
     shiftPieceLeft,
     shiftPieceRight,
-} from "./utils/bodyUtils";
-import {
     getBottomMost,
     overlay,
     overlayConflict,
@@ -18,8 +17,7 @@ import {
     getRightMost,
     isFullRow,
     initialize2DArray,
-} from "./utils/matrixUtils";
-import { RNG } from "./utils/randomUtils";
+} from "./utils";
 export {
     ShiftBlockLeft,
     ShiftBlockRight,
@@ -270,6 +268,7 @@ class Restart implements Action {
                 GameConstants.GRID_WIDTH
             ),
             level: 1,
+            score: 0,
             gameEnd: false,
         };
     };
