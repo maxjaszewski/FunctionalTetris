@@ -3,7 +3,6 @@
 export type {
     Key,
     Event,
-    ViewType,
     State,
     Action,
     Block,
@@ -26,10 +25,6 @@ type Key = "KeyS" | "KeyA" | "KeyD";
  */
 type Event = "keydown" | "keyup" | "keypress";
 
-/**
- * our game has the following view element types
- */
-type ViewType = undefined; // TODO
 
 /**
  * Block
