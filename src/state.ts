@@ -132,11 +132,12 @@ class RotateBlock implements Action {
             matrix: rotate(s.currentTetrisPiece.matrix),
         };
 
-        // Check if out of bounds
+        // Check if overlay conflict or out of bounds
         return !(
             rotatedPiece.x + getRightMost(rotatedPiece.matrix) >
                 GameConstants.GRID_WIDTH - 1 ||
-            rotatedPiece.x + getLeftMost(rotatedPiece.matrix) < 0
+            rotatedPiece.x + getLeftMost(rotatedPiece.matrix) < 0 ||
+            overlayConflict(s.stationaryBlocks)(pieceToMatrix(rotatedPiece))
         )
             ? {
                   ...s,
