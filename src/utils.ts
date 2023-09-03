@@ -41,15 +41,23 @@ export {
 // **************************************************************************
 // **************************************************************************
 
-const initialize2DArray = <T>(rows: number, cols: number, initial: T): Matrix<T> => {
-    return Array.from({ length: rows }, () => Array.from({ length: cols }, ()=>initial));
-}
+const initialize2DArray = <T>(
+    rows: number,
+    cols: number,
+    initial: T
+): Matrix<T> => {
+    return Array.from({ length: rows }, () =>
+        Array.from({ length: cols }, () => initial)
+    );
+};
 
-const isFullRow = <T>(matrixRow: ReadonlyArray<T>) => (check: (elem: T) => boolean): boolean => {
-    return matrixRow.reduce((accum, curr) => {
-        return accum && check(curr);
-    }, true);
-}
+const isFullRow =
+    <T>(matrixRow: ReadonlyArray<T>) =>
+    (check: (elem: T) => boolean): boolean => {
+        return matrixRow.reduce((accum, curr) => {
+            return accum && check(curr);
+        }, true);
+    };
 
 const overlayConflict =
     <T>(matrixA: Matrix<T>) =>
@@ -75,32 +83,37 @@ const overlay =
     (matrixB: Matrix<T>) =>
     (combine: (a: T) => (b: T) => T): Matrix<T> => {
         return matrixA.map((currRow, rowNum) =>
-            currRow.map(
-                (_, colNum) =>
-                    combine(matrixA[rowNum][colNum])(matrixB[rowNum][colNum])
+            currRow.map((_, colNum) =>
+                combine(matrixA[rowNum][colNum])(matrixB[rowNum][colNum])
             )
         );
     };
 
-const getLeftMost = <T>(matrix: Matrix<T>) => (check: (row: ReadonlyArray<T>) => boolean): number => {
-    return transpose(matrix)
-        .map((row, rowIndex) => ({ index: rowIndex, bool: check(row) }))
-        .filter((rowBool) => rowBool.bool)[0].index;
-}
+const getLeftMost =
+    <T>(matrix: Matrix<T>) =>
+    (check: (row: ReadonlyArray<T>) => boolean): number => {
+        return transpose(matrix)
+            .map((row, rowIndex) => ({ index: rowIndex, bool: check(row) }))
+            .filter((rowBool) => rowBool.bool)[0].index;
+    };
 
-const getRightMost = <T>(matrix: Matrix<T>) => (check: (row: ReadonlyArray<T>) => boolean): number => {
-    const rowBooleans = transpose(matrix)
-        .map((row, rowIndex) => ({ index: rowIndex, bool: check(row) }))
-        .filter((rowBool) => rowBool.bool);
-    return rowBooleans[rowBooleans.length - 1].index;
-}
+const getRightMost =
+    <T>(matrix: Matrix<T>) =>
+    (check: (row: ReadonlyArray<T>) => boolean): number => {
+        const rowBooleans = transpose(matrix)
+            .map((row, rowIndex) => ({ index: rowIndex, bool: check(row) }))
+            .filter((rowBool) => rowBool.bool);
+        return rowBooleans[rowBooleans.length - 1].index;
+    };
 
-const getBottomMost = <T>(matrix: Matrix<T>) => (check: (row: ReadonlyArray<T>) => boolean): number => {
-    const rowBooleans = matrix
-        .map((row, rowIndex) => ({ index: rowIndex, bool: check(row) }))
-        .filter((rowBool) => rowBool.bool);
-    return rowBooleans[rowBooleans.length - 1].index;
-}
+const getBottomMost =
+    <T>(matrix: Matrix<T>) =>
+    (check: (row: ReadonlyArray<T>) => boolean): number => {
+        const rowBooleans = matrix
+            .map((row, rowIndex) => ({ index: rowIndex, bool: check(row) }))
+            .filter((rowBool) => rowBool.bool);
+        return rowBooleans[rowBooleans.length - 1].index;
+    };
 
 const getColumn =
     <T>(matrix: Matrix<T>) =>
@@ -121,7 +134,6 @@ function rotate<T>(matrix: Matrix<T>) {
         matrix.map((row) => row[index]).reverse()
     );
 }
-
 
 // **************************************************************************
 // **************************************************************************
@@ -284,26 +296,26 @@ const blockConflict =
         return (a && b) != null;
     };
 
-    function pieceToMatrix(tetrisPiece: TetrisPiece): Matrix<Block> {
-        const numRows = tetrisPiece.matrix.length;
-        const numCols = tetrisPiece.matrix[0].length;
-        const x = tetrisPiece.x;
-        const y = tetrisPiece.y;
-    
-        const baseGrid: Matrix<Block> = initialize2DArray(
-            GameConstants.GRID_HEIGHT,
-            GameConstants.GRID_HEIGHT,
-            null
-        );
-        return baseGrid.map((currRow, row) =>
-            currRow.map((_, col) =>
-                row >= y && row < y + numRows && col >= x && col < x + numCols
-                    ? tetrisPiece.matrix[row - y][col - x]
-                    : null
-            )
-        );
-    }
-    
+function pieceToMatrix(tetrisPiece: TetrisPiece): Matrix<Block> {
+    const numRows = tetrisPiece.matrix.length;
+    const numCols = tetrisPiece.matrix[0].length;
+    const x = tetrisPiece.x;
+    const y = tetrisPiece.y;
+
+    const baseGrid: Matrix<Block> = initialize2DArray(
+        GameConstants.GRID_HEIGHT,
+        GameConstants.GRID_HEIGHT,
+        null
+    );
+    return baseGrid.map((currRow, row) =>
+        currRow.map((_, col) =>
+            row >= y && row < y + numRows && col >= x && col < x + numCols
+                ? tetrisPiece.matrix[row - y][col - x]
+                : null
+        )
+    );
+}
+
 function hasBlock(matrixRow: ReadonlyArray<Block>): boolean {
     return matrixRow.reduce((accum, curr) => accum || curr != null, false);
 }

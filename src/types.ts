@@ -1,14 +1,6 @@
 // This file defines Typescript types and interfaces
 
-export type {
-    Key,
-    Event,
-    State,
-    Action,
-    Block,
-    TetrisPiece,
-    Matrix
-};
+export type { Key, Event, State, Action, Block, TetrisPiece, Matrix };
 
 /**
  * Block fill styles
@@ -24,7 +16,6 @@ type Key = "KeyS" | "KeyA" | "KeyD";
  * only input events are keydown and up
  */
 type Event = "keydown" | "keyup" | "keypress";
-
 
 /**
  * Block
