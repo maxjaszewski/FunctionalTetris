@@ -345,7 +345,8 @@ const transpose = (matrix: BlockMatrix): BlockMatrix => {
 };
 
 function rotate(matrix: BlockMatrix) {
-    //TODO https://stackoverflow.com/questions/15170942/how-to-rotate-a-matrix-in-an-array-in-javascript
+    // Jadhav, N., (2022, December 6th), Rotating a two dimensional m x n matrix
+    // https://stackoverflow.com/questions/15170942/how-to-rotate-a-matrix-in-an-array-in-javascript
     return matrix[0].map((val, index) =>
         matrix.map((row) => row[index]).reverse()
     );
