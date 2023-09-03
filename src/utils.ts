@@ -286,9 +286,9 @@ function hasBlock(matrixRow: ReadonlyArray<Block>): boolean {
     return matrixRow.reduce((accum, curr) => accum || curr != null, false);
 }
 
-function isFullRow(matrixRow: ReadonlyArray<Block>): boolean {
+const isFullRow = <T>(matrixRow: ReadonlyArray<T>) => (check: (elem: T) => boolean): boolean => {
     return matrixRow.reduce((accum, curr) => {
-        return accum && curr != null;
+        return accum && check(curr);
     }, true);
 }
 

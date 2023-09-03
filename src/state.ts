@@ -192,7 +192,7 @@ class Tick implements Action {
 
         // Count number of full rows
         const numFullRows: number = newState.stationaryBlocks.filter((row) =>
-            isFullRow(row)
+            isFullRow(row)(block => (block != null))
         ).length;
         // Generate blank full rows to top fill stationary blocks
         const newTopRows: Matrix<Block> = Array.from(
@@ -212,7 +212,7 @@ class Tick implements Action {
                     ? [
                           ...newTopRows,
                           ...newState.stationaryBlocks.filter(
-                              (row) => !isFullRow(row)
+                              (row) => !isFullRow(row)(block => (block != null))
                           ),
                       ]
                     : newState.stationaryBlocks,
