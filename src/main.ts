@@ -50,24 +50,29 @@ export function main() {
             filter(({ repeat }) => !repeat)
         );
 
+    // Key A          Left
     const shiftBlockLeft$ = fromKey("KeyA").pipe(
         map((_) => new ShiftBlockLeft())
-    ); // Key A          Left
+    );
+    // Key D          Right
     const shiftBlockRight$ = fromKey("KeyD").pipe(
         map((_) => new ShiftBlockRight())
-    ); // Key D          Right
-    const dropBlock$ = fromKey("KeyS").pipe(map((_) => new RotateBlock())); // Key S          Rotate
+    );
+    // Key S          Rotate
+    const dropBlock$ = fromKey("KeyS").pipe(map((_) => new RotateBlock()));
 
+    // Tick Rate      Tick
     const tick$ = interval(GameConstants.TICK_RATE_MS).pipe(
         map((elapsed) => new Tick())
-    ); // Tick Rate      Tick
+    );
 
     const resetButton = document.getElementById(
         "restart-button"
     ) as HTMLElement;
+    // Button Click   Reset
     const resetButton$ = fromEvent(resetButton, "click").pipe(
         map((_) => new Restart())
-    ); // Button Click   Reset
+    );
 
     // Merge observables to action stream
     const action$: Observable<Action> = merge(
