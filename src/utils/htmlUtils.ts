@@ -1,11 +1,13 @@
-export { attr, show, hide, createSvgElement }
+export { attr, show, hide, createSvgElement };
 
 /**
-     * set a number of attributes on an Element at once
-     * @param e the Element
-     * @param o a property bag
-     */
-const attr = (e: Element, o: { [p: string]: unknown }) => { for (const k in o) e.setAttribute(k, String(o[k])) }
+ * set a number of attributes on an Element at once
+ * @param e the Element
+ * @param o a property bag
+ */
+const attr = (e: Element, o: { [p: string]: unknown }) => {
+    for (const k in o) e.setAttribute(k, String(o[k]));
+};
 
 /**
  * Displays a SVG element on the canvas. Brings to foreground.
@@ -24,16 +26,16 @@ const hide = (elem: SVGGraphicsElement) =>
     elem.setAttribute("visibility", "hidden");
 
 /**
-* Creates an SVG element with the given properties.
-*
-* See https://developer.mozilla.org/en-US/docs/Web/SVG/Element for valid
-* element names and properties.
-*
-* @param namespace Namespace of the SVG element
-* @param name SVGElement name
-* @param props Properties to set on the SVG element
-* @returns SVG element
-*/
+ * Creates an SVG element with the given properties.
+ *
+ * See https://developer.mozilla.org/en-US/docs/Web/SVG/Element for valid
+ * element names and properties.
+ *
+ * @param namespace Namespace of the SVG element
+ * @param name SVGElement name
+ * @param props Properties to set on the SVG element
+ * @returns SVG element
+ */
 const createSvgElement = (
     namespace: string | null,
     name: string,

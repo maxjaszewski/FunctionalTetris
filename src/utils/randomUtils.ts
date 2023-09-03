@@ -1,4 +1,4 @@
-export { RNG }
+export { RNG };
 
 /**
  * A random number generator which provides two pure functions
@@ -13,7 +13,7 @@ abstract class RNG {
 
     /**
      * Call `hash` repeatedly to generate the sequence of hashes.
-     * @param seed 
+     * @param seed
      * @returns a hash of the seed
      */
     public static hash = (seed: number) => (RNG.a * seed + RNG.c) % RNG.m;
@@ -23,7 +23,9 @@ abstract class RNG {
      */
     public static scale = (hash: number) => (2 * hash) / (RNG.m - 1) - 1;
 
-    public static discrete = (low: number) => (high: number) => (hash: number): number => Math.floor((((hash) / (RNG.m - 1)) * (high - low)) + low);
+    public static discrete =
+        (low: number) =>
+        (high: number) =>
+        (hash: number): number =>
+            Math.floor((hash / (RNG.m - 1)) * (high - low) + low);
 }
-
-

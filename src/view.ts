@@ -1,51 +1,60 @@
-// Functions to render the view based on the model
+export { updateView };
 
-export { updateView }
-
-import { State, Block, BlockMatrix } from "./types"
+import { State, Block, BlockMatrix } from "./types";
 import { Viewport, BlockConstants } from "./constants";
 import { show, hide, createSvgElement } from "./utils/htmlUtils";
 import { pieceToMatrix } from "./utils/matrixUtils";
 
-
 /**
  * Updates the view of a Block
- * 
  * @param block Update view for this block
  */
 
 const clearSVGBoard = (rootSVG: HTMLElement): void => {
-    Array.from(rootSVG.children).filter(element => element.classList.contains("block")).forEach(block => rootSVG.removeChild(block));
+    Array.from(rootSVG.children)
+        .filter((element) => element.classList.contains("block"))
+        .forEach((block) => rootSVG.removeChild(block));
+};
 
-}
-
-
-const paintMatrix = (rootSVG: HTMLElement) => (matrix: BlockMatrix): void => {
-    matrix.forEach((row, rowNumber) => row.forEach((block, columnNumber) => createBlockView(rootSVG)(block)(rowNumber)(columnNumber)));
-}
+/**
+ * Paints an SVG HTML element with blocks from a matrix
+ * @param rootSVG svg board to paint with matrix of blocks
+ */
+const paintMatrix =
+    (rootSVG: HTMLElement) =>
+    (matrix: BlockMatrix): void => {
+        matrix.forEach((row, rowNumber) =>
+            row.forEach((block, columnNumber) =>
+                createBlockView(rootSVG)(block)(rowNumber)(columnNumber)
+            )
+        );
+    };
 /**
  * Updates the view of a Block
- * 
- * @param block Update view for this block
+ * @param block Block
+ * @param row Paint block at this row
+ * @param column Paint block at this column
  */
-
-const createBlockView = (rootSVG: HTMLElement) => (block: Block) => (row: number) => (column: number): void => {
-    if (block != null) {
-        function appendNewRect() {
-            const v = createSvgElement(rootSVG.namespaceURI, "rect");
-            rootSVG.appendChild(v)
-            return v;
+const createBlockView =
+    (rootSVG: HTMLElement) =>
+    (block: Block) =>
+    (row: number) =>
+    (column: number): void => {
+        if (block != null) {
+            function appendNewRect() {
+                const v = createSvgElement(rootSVG.namespaceURI, "rect");
+                rootSVG.appendChild(v);
+                return v;
+            }
+            const b = appendNewRect();
+            b.setAttribute("height", `${BlockConstants.HEIGHT}`);
+            b.setAttribute("width", `${BlockConstants.WIDTH}`);
+            b.setAttribute("x", `${BlockConstants.WIDTH * column}`);
+            b.setAttribute("y", `${BlockConstants.HEIGHT * row}`);
+            b.setAttribute("style", `fill: ${block}`);
+            b.setAttribute("class", "block");
         }
-        const b = appendNewRect();
-        b.setAttribute("height", `${BlockConstants.HEIGHT}`);
-        b.setAttribute("width", `${BlockConstants.WIDTH}`);
-        b.setAttribute("x", `${BlockConstants.WIDTH * column}`);
-        b.setAttribute("y", `${BlockConstants.HEIGHT * row}`);
-        b.setAttribute("style", `fill: ${block}`);
-        b.setAttribute("class", "block");
-    }
-
-}
+    };
 
 /**
  * Renders the current state to the canvas.
@@ -56,15 +65,17 @@ const createBlockView = (rootSVG: HTMLElement) => (block: Block) => (row: number
  * @param s the current game model State
  * @returns void
  */
-function updateView(onFinish: () => void) {
+function updateView() {
     return function (s: State): void {
         // Canvas elements
         const svg = document.querySelector("#svgCanvas") as SVGGraphicsElement &
             HTMLElement;
-        const preview = document.querySelector("#svgPreview") as SVGGraphicsElement &
-            HTMLElement;
-        const gameover = document.querySelector("#gameOver") as SVGGraphicsElement &
-            HTMLElement;
+        const preview = document.querySelector(
+            "#svgPreview"
+        ) as SVGGraphicsElement & HTMLElement;
+        const gameover = document.querySelector(
+            "#gameOver"
+        ) as SVGGraphicsElement & HTMLElement;
         const container = document.querySelector("#main") as HTMLElement;
 
         svg.setAttribute("height", `${Viewport.CANVAS_HEIGHT}`);
@@ -75,11 +86,12 @@ function updateView(onFinish: () => void) {
         // Text fields
         const levelText = document.querySelector("#levelText") as HTMLElement;
         const scoreText = document.querySelector("#scoreText") as HTMLElement;
-        const highScoreText = document.querySelector("#highScoreText") as HTMLElement;
+        const highScoreText = document.querySelector(
+            "#highScoreText"
+        ) as HTMLElement;
         levelText.textContent = s.level.toString();
         scoreText.textContent = s.score.toString();
         highScoreText.textContent = s.highscore.toString();
-
 
         // Clear Board
         clearSVGBoard(svg);
@@ -89,10 +101,8 @@ function updateView(onFinish: () => void) {
         svgPaint(s.stationaryBlocks);
         svgPaint(pieceToMatrix(s.currentTetrisPiece));
 
-
         const previewPaint = paintMatrix(preview);
-        previewPaint(s.upComingTetrisPiece.matrix)
-
+        previewPaint(s.upComingTetrisPiece.matrix);
 
         if (s.gameEnd) {
             show(gameover);
@@ -100,6 +110,5 @@ function updateView(onFinish: () => void) {
         } else {
             hide(gameover);
         }
-    }
+    };
 }
-

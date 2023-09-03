@@ -1,5 +1,5 @@
 // Utility functions and definitions that are NOT specific to the tetris game
-export { flatMap, not, elem, except, isNotNullOrUndefined }
+export { flatMap, not, elem, except, isNotNullOrUndefined };
 
 /**
  * apply f to every element of a and return the result in a flat array
@@ -13,13 +13,15 @@ function flatMap<T, U>(
     return Array.prototype.concat(...a.map(f));
 }
 
-const
-    /**
+const /**
      * Composable not: invert boolean result of given function
      * @param f a function returning boolean
      * @param x the value that will be tested with f
      */
-    not = <T>(f: (x: T) => boolean) => (x: T) => !f(x),
+    not =
+        <T>(f: (x: T) => boolean) =>
+        (x: T) =>
+            !f(x),
     /**
      * is e an element of a using the eq function to test equality?
      * @param eq equality test function for two Ts
@@ -28,8 +30,9 @@ const
      */
     elem =
         <T>(eq: (_: T) => (_: T) => boolean) =>
-            (a: ReadonlyArray<T>) =>
-                (e: T) => a.findIndex(eq(e)) >= 0,
+        (a: ReadonlyArray<T>) =>
+        (e: T) =>
+            a.findIndex(eq(e)) >= 0,
     /**
      * array a except anything in b
      * @param eq equality test function for two Ts
@@ -38,15 +41,16 @@ const
      */
     except =
         <T>(eq: (_: T) => (_: T) => boolean) =>
-            (a: ReadonlyArray<T>) =>
-                (b: ReadonlyArray<T>) => a.filter(not(elem(eq)(b)))
+        (a: ReadonlyArray<T>) =>
+        (b: ReadonlyArray<T>) =>
+            a.filter(not(elem(eq)(b)));
 
 /**
  * Type guard for use in filters
  * @param input something that might be null or undefined
  */
-function isNotNullOrUndefined<T extends object>(input: null | undefined | T): input is T {
+function isNotNullOrUndefined<T extends object>(
+    input: null | undefined | T
+): input is T {
     return input != null;
 }
-
-
