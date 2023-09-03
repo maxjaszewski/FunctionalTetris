@@ -34,6 +34,98 @@ export {
 // **************************************************************************
 // **************************************************************************
 // **************************************************************************
+// ***************************     GENERIC    *******************************
+// *************************   MATRIX FUNCTIONS   ***************************
+// **************************************************************************
+// **************************************************************************
+// **************************************************************************
+// **************************************************************************
+
+const initialize2DArray = <T>(rows: number, cols: number, initial: T): Matrix<T> => {
+    return Array.from({ length: rows }, () => Array.from({ length: cols }, ()=>initial));
+}
+
+const isFullRow = <T>(matrixRow: ReadonlyArray<T>) => (check: (elem: T) => boolean): boolean => {
+    return matrixRow.reduce((accum, curr) => {
+        return accum && check(curr);
+    }, true);
+}
+
+const overlayConflict =
+    <T>(matrixA: Matrix<T>) =>
+    (matrixB: Matrix<T>) =>
+    (conflict: (a: T) => (b: T) => boolean) => {
+        return matrixA.reduce(
+            (accum, currRow, rowNum) =>
+                accum ||
+                currRow.reduce(
+                    (accum, _, colNum) =>
+                        accum ||
+                        conflict(matrixA[rowNum][colNum])(
+                            matrixB[rowNum][colNum]
+                        ),
+                    false
+                ),
+            false
+        );
+    };
+
+const overlay =
+    <T>(matrixA: Matrix<T>) =>
+    (matrixB: Matrix<T>) =>
+    (combine: (a: T) => (b: T) => T): Matrix<T> => {
+        return matrixA.map((currRow, rowNum) =>
+            currRow.map(
+                (_, colNum) =>
+                    combine(matrixA[rowNum][colNum])(matrixB[rowNum][colNum])
+            )
+        );
+    };
+
+const getLeftMost = <T>(matrix: Matrix<T>) => (check: (row: ReadonlyArray<T>) => boolean): number => {
+    return transpose(matrix)
+        .map((row, rowIndex) => ({ index: rowIndex, bool: check(row) }))
+        .filter((rowBool) => rowBool.bool)[0].index;
+}
+
+const getRightMost = <T>(matrix: Matrix<T>) => (check: (row: ReadonlyArray<T>) => boolean): number => {
+    const rowBooleans = transpose(matrix)
+        .map((row, rowIndex) => ({ index: rowIndex, bool: check(row) }))
+        .filter((rowBool) => rowBool.bool);
+    return rowBooleans[rowBooleans.length - 1].index;
+}
+
+const getBottomMost = <T>(matrix: Matrix<T>) => (check: (row: ReadonlyArray<T>) => boolean): number => {
+    const rowBooleans = matrix
+        .map((row, rowIndex) => ({ index: rowIndex, bool: check(row) }))
+        .filter((rowBool) => rowBool.bool);
+    return rowBooleans[rowBooleans.length - 1].index;
+}
+
+const getColumn =
+    <T>(matrix: Matrix<T>) =>
+    (column: number): ReadonlyArray<T> => {
+        return transpose(matrix)[column];
+    };
+
+const transpose = <T>(matrix: Matrix<T>): Matrix<T> => {
+    return matrix.map((row, rowIndex) =>
+        row.map((col, colIndex) => matrix[colIndex][rowIndex])
+    );
+};
+
+function rotate<T>(matrix: Matrix<T>) {
+    // Jadhav, N., (2022, December 6th), Rotating a two dimensional m x n matrix
+    // https://stackoverflow.com/questions/15170942/how-to-rotate-a-matrix-in-an-array-in-javascript
+    return matrix[0].map((val, index) =>
+        matrix.map((row) => row[index]).reverse()
+    );
+}
+
+
+// **************************************************************************
+// **************************************************************************
+// **************************************************************************
 // **************************************************************************
 // ***********************   RANDOM FUNCTIONS   *****************************
 // **************************************************************************
@@ -271,94 +363,3 @@ const createSvgElement = (
     Object.entries(props).forEach(([k, v]) => elem.setAttribute(k, v));
     return elem;
 };
-
-// **************************************************************************
-// **************************************************************************
-// **************************************************************************
-// ***************************     GENERIC    *******************************
-// *************************   MATRIX FUNCTIONS   ***************************
-// **************************************************************************
-// **************************************************************************
-// **************************************************************************
-// **************************************************************************
-
-const initialize2DArray = <T>(rows: number, cols: number, initial: T): Matrix<T> => {
-    return Array.from({ length: rows }, () => Array.from({ length: cols }, ()=>initial));
-}
-
-const isFullRow = <T>(matrixRow: ReadonlyArray<T>) => (check: (elem: T) => boolean): boolean => {
-    return matrixRow.reduce((accum, curr) => {
-        return accum && check(curr);
-    }, true);
-}
-
-const overlayConflict =
-    <T>(matrixA: Matrix<T>) =>
-    (matrixB: Matrix<T>) =>
-    (conflict: (a: T) => (b: T) => boolean) => {
-        return matrixA.reduce(
-            (accum, currRow, rowNum) =>
-                accum ||
-                currRow.reduce(
-                    (accum, _, colNum) =>
-                        accum ||
-                        conflict(matrixA[rowNum][colNum])(
-                            matrixB[rowNum][colNum]
-                        ),
-                    false
-                ),
-            false
-        );
-    };
-
-const overlay =
-    <T>(matrixA: Matrix<T>) =>
-    (matrixB: Matrix<T>) =>
-    (combine: (a: T) => (b: T) => T): Matrix<T> => {
-        return matrixA.map((currRow, rowNum) =>
-            currRow.map(
-                (_, colNum) =>
-                    combine(matrixA[rowNum][colNum])(matrixB[rowNum][colNum])
-            )
-        );
-    };
-
-const getLeftMost = <T>(matrix: Matrix<T>) => (check: (row: ReadonlyArray<T>) => boolean): number => {
-    return transpose(matrix)
-        .map((row, rowIndex) => ({ index: rowIndex, bool: check(row) }))
-        .filter((rowBool) => rowBool.bool)[0].index;
-}
-
-const getRightMost = <T>(matrix: Matrix<T>) => (check: (row: ReadonlyArray<T>) => boolean): number => {
-    const rowBooleans = transpose(matrix)
-        .map((row, rowIndex) => ({ index: rowIndex, bool: check(row) }))
-        .filter((rowBool) => rowBool.bool);
-    return rowBooleans[rowBooleans.length - 1].index;
-}
-
-const getBottomMost = <T>(matrix: Matrix<T>) => (check: (row: ReadonlyArray<T>) => boolean): number => {
-    const rowBooleans = matrix
-        .map((row, rowIndex) => ({ index: rowIndex, bool: check(row) }))
-        .filter((rowBool) => rowBool.bool);
-    return rowBooleans[rowBooleans.length - 1].index;
-}
-
-const getColumn =
-    <T>(matrix: Matrix<T>) =>
-    (column: number): ReadonlyArray<T> => {
-        return transpose(matrix)[column];
-    };
-
-const transpose = <T>(matrix: Matrix<T>): Matrix<T> => {
-    return matrix.map((row, rowIndex) =>
-        row.map((col, colIndex) => matrix[colIndex][rowIndex])
-    );
-};
-
-function rotate<T>(matrix: Matrix<T>) {
-    // Jadhav, N., (2022, December 6th), Rotating a two dimensional m x n matrix
-    // https://stackoverflow.com/questions/15170942/how-to-rotate-a-matrix-in-an-array-in-javascript
-    return matrix[0].map((val, index) =>
-        matrix.map((row) => row[index]).reverse()
-    );
-}
