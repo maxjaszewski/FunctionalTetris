@@ -22,7 +22,6 @@ export {
     overlayConflict,
     getLeftMost,
     getRightMost,
-    getTopMost,
     getBottomMost,
     hasBlock,
     transpose,
@@ -323,28 +322,22 @@ const overlay =
         );
     };
 
-function getLeftMost(matrix: Matrix<Block>): number {
+const getLeftMost = <T>(matrix: Matrix<T>) => (check: (row: ReadonlyArray<T>) => boolean): number => {
     return transpose(matrix)
-        .map((row, rowIndex) => ({ index: rowIndex, bool: hasBlock(row) }))
+        .map((row, rowIndex) => ({ index: rowIndex, bool: check(row) }))
         .filter((rowBool) => rowBool.bool)[0].index;
 }
 
-function getRightMost(matrix: Matrix<Block>): number {
+const getRightMost = <T>(matrix: Matrix<T>) => (check: (row: ReadonlyArray<T>) => boolean): number => {
     const rowBooleans = transpose(matrix)
-        .map((row, rowIndex) => ({ index: rowIndex, bool: hasBlock(row) }))
+        .map((row, rowIndex) => ({ index: rowIndex, bool: check(row) }))
         .filter((rowBool) => rowBool.bool);
     return rowBooleans[rowBooleans.length - 1].index;
 }
 
-function getTopMost(matrix: Matrix<Block>): number {
-    return matrix
-        .map((row, rowIndex) => ({ index: rowIndex, bool: hasBlock(row) }))
-        .filter((rowBool) => rowBool.bool)[-1].index;
-}
-
-function getBottomMost(matrix: Matrix<Block>): number {
+const getBottomMost = <T>(matrix: Matrix<T>) => (check: (row: ReadonlyArray<T>) => boolean): number => {
     const rowBooleans = matrix
-        .map((row, rowIndex) => ({ index: rowIndex, bool: hasBlock(row) }))
+        .map((row, rowIndex) => ({ index: rowIndex, bool: check(row) }))
         .filter((rowBool) => rowBool.bool);
     return rowBooleans[rowBooleans.length - 1].index;
 }

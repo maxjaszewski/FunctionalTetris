@@ -61,7 +61,7 @@ class ShiftBlockLeft implements Action {
         // Check if overlay conflict or out of bounds
         return !(
             overlayConflict(s.stationaryBlocks)(pieceToMatrix(pieceLeft))(blockConflict) ||
-            pieceLeft.x + getLeftMost(pieceLeft.matrix) < 0
+            pieceLeft.x + getLeftMost(pieceLeft.matrix)(hasBlock) < 0
         )
             ? {
                   ...s,
@@ -94,7 +94,7 @@ class ShiftBlockRight implements Action {
         // Check if overlay conflict or out of bounds
         return !(
             overlayConflict(s.stationaryBlocks)(pieceToMatrix(pieceRight))(blockConflict) ||
-            pieceRight.x + getRightMost(pieceRight.matrix) >
+            pieceRight.x + getRightMost(pieceRight.matrix)(hasBlock) >
                 GameConstants.GRID_WIDTH - 1
         )
             ? {
@@ -134,9 +134,9 @@ class RotateBlock implements Action {
 
         // Check if overlay conflict or out of bounds
         return !(
-            rotatedPiece.x + getRightMost(rotatedPiece.matrix) >
+            rotatedPiece.x + getRightMost(rotatedPiece.matrix)(hasBlock) >
                 GameConstants.GRID_WIDTH - 1 ||
-            rotatedPiece.x + getLeftMost(rotatedPiece.matrix) < 0 ||
+            rotatedPiece.x + getLeftMost(rotatedPiece.matrix)(hasBlock) < 0 ||
             overlayConflict(s.stationaryBlocks)(pieceToMatrix(rotatedPiece))(blockConflict)
         )
             ? {
@@ -236,7 +236,7 @@ class Tick implements Action {
     static tetrisPieceBlocked = (s: State): boolean => {
         return (
             s.currentTetrisPiece.y +
-                getBottomMost(s.currentTetrisPiece.matrix) ==
+                getBottomMost(s.currentTetrisPiece.matrix)(hasBlock) ==
                 GameConstants.GRID_HEIGHT - 1 ||
             overlayConflict(s.stationaryBlocks)(
                 pieceToMatrix(shiftPieceDown(s.currentTetrisPiece))
