@@ -22,7 +22,8 @@ const initialState: State = {
     currentTetrisPiece: generateRandomPiece(2),
     stationaryBlocks: initialize2DArray(
         GameConstants.GRID_HEIGHT,
-        GameConstants.GRID_WIDTH
+        GameConstants.GRID_WIDTH,
+        null
     ),
     level: 1,
     score: 0,

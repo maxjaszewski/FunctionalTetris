@@ -267,7 +267,8 @@ class Restart implements Action {
             upComingTetrisPiece: generateRandomPiece(s.seed + 1),
             stationaryBlocks: initialize2DArray(
                 GameConstants.GRID_HEIGHT,
-                GameConstants.GRID_WIDTH
+                GameConstants.GRID_WIDTH,
+                null
             ),
             level: 1,
             score: 0,

@@ -251,15 +251,15 @@ const createSvgElement = (
 // **************************************************************************
 // **************************************************************************
 // **************************************************************************
-// **************************************************************************
+// ***************************     GENERIC    *******************************
 // *************************   MATRIX FUNCTIONS   ***************************
 // **************************************************************************
 // **************************************************************************
 // **************************************************************************
 // **************************************************************************
 
-function initialize2DArray(rows: number, cols: number): Matrix<Block> {
-    return Array.from({ length: rows }, () => Array.from({ length: cols }));
+const initialize2DArray = <T>(rows: number, cols: number, initial: T): Matrix<T> => {
+    return Array.from({ length: rows }, () => Array.from({ length: cols }, ()=>initial));
 }
 
 function pieceToMatrix(tetrisPiece: TetrisPiece): Matrix<Block> {
@@ -268,9 +268,10 @@ function pieceToMatrix(tetrisPiece: TetrisPiece): Matrix<Block> {
     const x = tetrisPiece.x;
     const y = tetrisPiece.y;
 
-    const baseGrid = initialize2DArray(
+    const baseGrid: Matrix<Block> = initialize2DArray(
         GameConstants.GRID_HEIGHT,
-        GameConstants.GRID_HEIGHT
+        GameConstants.GRID_HEIGHT,
+        null
     );
     return baseGrid.map((currRow, row) =>
         currRow.map((_, col) =>
