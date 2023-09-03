@@ -192,6 +192,30 @@ const blockConflict =
         return (a && b) != null;
     };
 
+    function pieceToMatrix(tetrisPiece: TetrisPiece): Matrix<Block> {
+        const numRows = tetrisPiece.matrix.length;
+        const numCols = tetrisPiece.matrix[0].length;
+        const x = tetrisPiece.x;
+        const y = tetrisPiece.y;
+    
+        const baseGrid: Matrix<Block> = initialize2DArray(
+            GameConstants.GRID_HEIGHT,
+            GameConstants.GRID_HEIGHT,
+            null
+        );
+        return baseGrid.map((currRow, row) =>
+            currRow.map((_, col) =>
+                row >= y && row < y + numRows && col >= x && col < x + numCols
+                    ? tetrisPiece.matrix[row - y][col - x]
+                    : null
+            )
+        );
+    }
+    
+function hasBlock(matrixRow: ReadonlyArray<Block>): boolean {
+    return matrixRow.reduce((accum, curr) => accum || curr != null, false);
+}
+
 // **************************************************************************
 // **************************************************************************
 // **************************************************************************
@@ -260,30 +284,6 @@ const createSvgElement = (
 
 const initialize2DArray = <T>(rows: number, cols: number, initial: T): Matrix<T> => {
     return Array.from({ length: rows }, () => Array.from({ length: cols }, ()=>initial));
-}
-
-function pieceToMatrix(tetrisPiece: TetrisPiece): Matrix<Block> {
-    const numRows = tetrisPiece.matrix.length;
-    const numCols = tetrisPiece.matrix[0].length;
-    const x = tetrisPiece.x;
-    const y = tetrisPiece.y;
-
-    const baseGrid: Matrix<Block> = initialize2DArray(
-        GameConstants.GRID_HEIGHT,
-        GameConstants.GRID_HEIGHT,
-        null
-    );
-    return baseGrid.map((currRow, row) =>
-        currRow.map((_, col) =>
-            row >= y && row < y + numRows && col >= x && col < x + numCols
-                ? tetrisPiece.matrix[row - y][col - x]
-                : null
-        )
-    );
-}
-
-function hasBlock(matrixRow: ReadonlyArray<Block>): boolean {
-    return matrixRow.reduce((accum, curr) => accum || curr != null, false);
 }
 
 const isFullRow = <T>(matrixRow: ReadonlyArray<T>) => (check: (elem: T) => boolean): boolean => {
