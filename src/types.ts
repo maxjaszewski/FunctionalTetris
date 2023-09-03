@@ -7,7 +7,8 @@ export type {
     Action,
     Block,
     TetrisPiece,
-    BlockMatrix,
+    Matrix,
+    BlockMatrix
 };
 
 /**
@@ -34,9 +35,14 @@ type Event = "keydown" | "keyup" | "keypress";
 type Block = string | null;
 
 /**
+ * Matrix representation
+ */
+type Matrix<T> = ReadonlyArray<ReadonlyArray<T>>;
+
+/**
  * Matrix representation of blocks
  */
-type BlockMatrix = ReadonlyArray<ReadonlyArray<Block>>;
+type BlockMatrix = Matrix<Block>;
 
 /**
  * Tetris pieces

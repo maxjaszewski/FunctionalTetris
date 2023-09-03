@@ -1,5 +1,5 @@
 import { GameConstants } from "./constants";
-import { Block, BlockMatrix, TetrisPiece } from "./types";
+import { Block, BlockMatrix, Matrix, TetrisPiece } from "./types";
 
 // Can we change the readme please to avoid having all util functions in one
 // file?
@@ -247,7 +247,7 @@ const createSvgElement = (
 
 function initialize2DArray(rows: number, cols: number) {
     return Array.from({ length: rows }, () =>
-        Array.from({ length: cols }, () => null)
+        Array.from({ length: cols })
     );
 }
 
@@ -333,18 +333,18 @@ function getBottomMost(matrix: BlockMatrix): number {
 }
 
 const getColumn =
-    (matrix: BlockMatrix) =>
-    (column: number): ReadonlyArray<Block> => {
+    <T>(matrix: Matrix<T>) =>
+    (column: number): ReadonlyArray<T> => {
         return transpose(matrix)[column];
     };
 
-const transpose = (matrix: BlockMatrix): BlockMatrix => {
+const transpose = <T>(matrix: Matrix<T>): Matrix<T> => {
     return matrix.map((row, rowIndex) =>
         row.map((col, colIndex) => matrix[colIndex][rowIndex])
     );
 };
 
-function rotate(matrix: BlockMatrix) {
+function rotate<T>(matrix: Matrix<T>) {
     // Jadhav, N., (2022, December 6th), Rotating a two dimensional m x n matrix
     // https://stackoverflow.com/questions/15170942/how-to-rotate-a-matrix-in-an-array-in-javascript
     return matrix[0].map((val, index) =>
