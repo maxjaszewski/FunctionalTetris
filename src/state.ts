@@ -1,6 +1,6 @@
 // Functions and objects that mutate State (CHANGE MODEL)
 import { GameConstants } from "./constants";
-import { State, Action, TetrisPiece, BlockMatrix } from "./types";
+import { State, Action, TetrisPiece, Matrix, Block } from "./types";
 import {
     RNG,
     generateRandomPiece,
@@ -193,7 +193,7 @@ class Tick implements Action {
             isFullRow(row)
         ).length;
         // Generate blank full rows to top fill stationary blocks
-        const newTopRows: BlockMatrix = Array.from(
+        const newTopRows: Matrix<Block> = Array.from(
             { length: numFullRows },
             () => Array.from({ length: GameConstants.GRID_WIDTH }, () => null)
         );

@@ -1,5 +1,5 @@
 import { GameConstants } from "./constants";
-import { Block, BlockMatrix, Matrix, TetrisPiece } from "./types";
+import { Block, Matrix, TetrisPiece } from "./types";
 
 // Can we change the readme please to avoid having all util functions in one
 // file?
@@ -125,7 +125,7 @@ const generatePiece =
 
 const generatePieceMatrix =
     (piece: number) =>
-    (colour: Block): BlockMatrix => {
+    (colour: Block): Matrix<Block> => {
         switch (piece) {
             case 1: //O
                 return [
@@ -245,13 +245,13 @@ const createSvgElement = (
 // **************************************************************************
 // **************************************************************************
 
-function initialize2DArray(rows: number, cols: number) {
+function initialize2DArray(rows: number, cols: number): Matrix<Block> {
     return Array.from({ length: rows }, () =>
         Array.from({ length: cols })
     );
 }
 
-function pieceToMatrix(tetrisPiece: TetrisPiece): BlockMatrix {
+function pieceToMatrix(tetrisPiece: TetrisPiece): Matrix<Block> {
     const numRows = tetrisPiece.matrix.length;
     const numCols = tetrisPiece.matrix[0].length;
     const x = tetrisPiece.x;
@@ -280,7 +280,7 @@ function isFullRow(matrixRow: ReadonlyArray<Block>): boolean {
     }, true);
 }
 
-const overlayConflict: (a: BlockMatrix) => (b: BlockMatrix) => boolean =
+const overlayConflict: (a: Matrix<Block>) => (b: Matrix<Block>) => boolean =
     (matrixA) => (matrixB) => {
         return matrixA.reduce(
             (accum, currRow, rowNum) =>
@@ -296,7 +296,7 @@ const overlayConflict: (a: BlockMatrix) => (b: BlockMatrix) => boolean =
         );
     };
 
-const overlay: (a: BlockMatrix) => (b: BlockMatrix) => BlockMatrix =
+const overlay: (a: Matrix<Block>) => (b: Matrix<Block>) => Matrix<Block> =
     (matrixA) => (matrixB) => {
         return matrixA.map((currRow, rowNum) =>
             currRow.map(
@@ -306,26 +306,26 @@ const overlay: (a: BlockMatrix) => (b: BlockMatrix) => BlockMatrix =
         );
     };
 
-function getLeftMost(matrix: BlockMatrix): number {
+function getLeftMost(matrix: Matrix<Block>): number {
     return transpose(matrix)
         .map((row, rowIndex) => ({ index: rowIndex, bool: hasBlock(row) }))
         .filter((rowBool) => rowBool.bool)[0].index;
 }
 
-function getRightMost(matrix: BlockMatrix): number {
+function getRightMost(matrix: Matrix<Block>): number {
     const rowBooleans = transpose(matrix)
         .map((row, rowIndex) => ({ index: rowIndex, bool: hasBlock(row) }))
         .filter((rowBool) => rowBool.bool);
     return rowBooleans[rowBooleans.length - 1].index;
 }
 
-function getTopMost(matrix: BlockMatrix): number {
+function getTopMost(matrix: Matrix<Block>): number {
     return matrix
         .map((row, rowIndex) => ({ index: rowIndex, bool: hasBlock(row) }))
         .filter((rowBool) => rowBool.bool)[-1].index;
 }
 
-function getBottomMost(matrix: BlockMatrix): number {
+function getBottomMost(matrix: Matrix<Block>): number {
     const rowBooleans = matrix
         .map((row, rowIndex) => ({ index: rowIndex, bool: hasBlock(row) }))
         .filter((rowBool) => rowBool.bool);

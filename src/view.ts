@@ -1,6 +1,6 @@
 export { updateView };
 
-import { State, Block, BlockMatrix } from "./types";
+import { State, Block, Matrix } from "./types";
 import { Viewport, BlockConstants } from "./constants";
 import { createSvgElement, hide, show, pieceToMatrix } from "./utils";
 
@@ -21,7 +21,7 @@ const clearSVGBoard = (rootSVG: HTMLElement): void => {
  */
 const paintMatrix =
     (rootSVG: HTMLElement) =>
-    (matrix: BlockMatrix): void => {
+    (matrix: Matrix<Block>): void => {
         matrix.forEach((row, rowNumber) =>
             row.forEach((block, columnNumber) =>
                 createBlockView(rootSVG)(block)(rowNumber)(columnNumber)

@@ -7,8 +7,7 @@ export type {
     Action,
     Block,
     TetrisPiece,
-    Matrix,
-    BlockMatrix
+    Matrix
 };
 
 /**
@@ -40,20 +39,15 @@ type Block = string | null;
 type Matrix<T> = ReadonlyArray<ReadonlyArray<T>>;
 
 /**
- * Matrix representation of blocks
- */
-type BlockMatrix = Matrix<Block>;
-
-/**
  * Tetris pieces
  * x: x-coord of top left corner
  * y: y-coord of top left corner
- * matrix: 4x4 BlockMatrix of piece
+ * matrix: 4x4 Matrix of Blocks
  */
 type TetrisPiece = Readonly<{
     x: number;
     y: number;
-    matrix: BlockMatrix;
+    matrix: Matrix<Block>;
 }>;
 
 /**
@@ -62,7 +56,7 @@ type TetrisPiece = Readonly<{
 type State = Readonly<{
     upComingTetrisPiece: TetrisPiece;
     currentTetrisPiece: TetrisPiece;
-    stationaryBlocks: BlockMatrix;
+    stationaryBlocks: Matrix<Block>;
     level: number;
     score: number;
     highscore: number;
