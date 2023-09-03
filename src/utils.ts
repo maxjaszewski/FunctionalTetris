@@ -118,7 +118,7 @@ const generatePiece =
     (colour: Block): TetrisPiece => {
         return {
             x: 3,
-            y: -2,
+            y: -3,
             matrix: generatePieceMatrix(piece)(colour),
         };
     };
