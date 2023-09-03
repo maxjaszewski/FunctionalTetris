@@ -102,3 +102,15 @@ svg rect {
 .restart {
   background-color: aquamarine;
 }
+
+.instructions {
+  background-color: blueviolet;
+  width: 7em;
+  height: 5em;
+  margin: 0.1em;
+  align-items: center;
+  display: inline-block;
+  font-size: 0.7em;
+  font-weight: bolder;
+  text-align: center;
+}
