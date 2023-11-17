@@ -1,5 +1,4 @@
 :root {
-  background-color: rgb(0, 0, 0);
   padding: 2em;
   padding-top: 4em;
 }
@@ -97,6 +96,25 @@ svg rect {
   font-size: 1.5em;
   font-weight: bolder;
   text-align: center;
+}
+
+#restart-button {
+  background: #881400;
+	border-bottom: 6px inset rgba(0,0,0,.5);
+	border-left: 6px inset rgba(0,0,0,.5);
+	border-right: 6px inset rgba(255,255,255,.5);
+	border-top: 6px inset rgba(255,255,255,.5);
+	box-sizing: border-box;
+	color: white;
+	cursor: pointer;
+	display: inline-block;
+	text-transform: uppercase;
+	width: auto;
+	
+	&:focus,
+	&:hover {
+		background-color: #A81000;
+	}
 }
 
 .restart {
