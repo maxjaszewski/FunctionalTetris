@@ -1,4 +1,4 @@
-# Assignment 1
+# Functional Tetris
 
 ## Usage
 
